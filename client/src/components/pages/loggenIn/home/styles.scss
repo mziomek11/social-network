@@ -1,0 +1,50 @@
+$card-width: 500px;
+
+.main-container {
+  position: relative;
+}
+
+.message-menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.card-main {
+  width: $card-width !important;
+
+  .card-menu-container {
+    float: right;
+    position: relative;
+
+    .card-menu-icon {
+      float: right;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .card-menu {
+      position: absolute;
+      top: 8px;
+      right: 0;
+      z-index: 10 ;
+    }
+  }
+
+  .card-likes {
+    float: right;
+  }
+
+  .card-input {
+    input:focus {
+      border-color: transparent !important;
+      outline: none;
+    }
+  }
+}
+
+.post-add-form {
+  width: $card-width !important;
+}

@@ -1,0 +1,42 @@
+@import "../../scss/mixins.scss";
+
+@mixin nav-break-point {
+  @media (max-width: #{558px}) {
+    @content;
+  }
+}
+
+.header-content {
+  min-height: 65px !important;
+}
+
+@include nav-break-point {
+  .header-login-form {
+    width: 100% !important;
+    .fields {
+      flex-direction: column !important;
+
+      .field {
+        width: 100% !important;
+      }
+
+      .field:nth-child(2) {
+        margin: 10px 0px !important;
+      }
+    }
+  }
+
+  .header-logo {
+    text-align: center !important;
+  }
+
+  button.ui.primary.button {
+    width: 100% !important;
+  }
+}
+
+@include not-mobile {
+  .header-login-form {
+    height: 35px !important;
+  }
+}
