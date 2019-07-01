@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Card, Image, Icon } from "semantic-ui-react";
+import { isNull } from "util";
 
 import PostMenu from "./PostMenu";
 import CommentSection from "../comment/CommentSection";
@@ -8,7 +9,6 @@ import Avatar from "../../../../other/Avatar";
 import { RootState } from "MyTypes";
 import { Post as PostType } from "../../../../../store/post/models";
 import { User } from "../../../../../store/auth/models";
-import { isNull } from "util";
 
 type OwnProps = {
   id: string;

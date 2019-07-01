@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Comment } from "semantic-ui-react";
 
-import MyComment from "./Comment";
+import CommentMain from "./CommentMain";
 import { RootState } from "MyTypes";
 import {
   CommentsById,
@@ -29,7 +29,7 @@ class Comments extends React.Component<Props, {}> {
     return (
       <Comment.Group>
         {postComments.map(({ _id }) => (
-          <MyComment key={_id} id={_id} />
+          <CommentMain key={_id} id={_id} postId={id}/>
         ))}
       </Comment.Group>
     );

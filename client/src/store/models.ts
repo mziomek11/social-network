@@ -3,7 +3,7 @@ export interface Opinion {
   owner: string;
   authorName: string;
   authorGender: Gender;
-  content: string | null;
+  content: string;
   date: Date;
   likedBy: string[];
 }

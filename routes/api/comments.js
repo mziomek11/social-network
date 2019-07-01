@@ -39,53 +39,49 @@ router.post("/:postid", auth, async (req, res) => {
   }
 });
 
-// // @GET     api/posts/:id
-// // @desc    Get One Post
-// // @access  Private
-// router.get("/:id", auth, (req, res) => {
-//   Post.findById(req.params.id)
-//     .then(post => res.json(post))
-//     .catch(() => res.status(404).json({ msg: "Post does not exists" }));
-// });
+// @UPDATE  api/comments/:id
+// @desc    Update A Comment
+// @access  Private
+router.put("/:id", auth, async (req, res) => {
+  if (!req.body.content && !req.body.image)
+    res.status(400).json({ msg: "Send correct data" });
+  try {
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) res.status(404).json({ msg: "Comment does not exists" });
+    const post = await Post.findById(comment.post);
 
-// // @UPDATE  api/posts/:id
-// // @desc    Update A Post
-// // @access  Private
-// router.put("/:id", auth, async (req, res) => {
-//   if (!req.body.content && !req.body.image)
-//     res.status(400).json({ msg: "Send correct data" });
-//   try {
-//     const post = await Post.findById(req.params.id);
-//     if (!post) res.status(404).json({ msg: "Post does not exists" });
-//     if (post.owner !== req.user.id)
-//       res.status(403).json({ msg: "Access denied" });
+    if (comment.owner !== req.user.id && post.owner !== req.user.id)
+      res.status(403).json({ msg: "Access denied" });
 
-//     const updateData = { $set: { content: req.body.content } };
-//     if (req.body.image) updateData["$set"].image = req.body.image;
-//     await Post.findByIdAndUpdate(req.params.id, updateData);
-//     const updatedPost = await Post.findById(req.params.id);
+    const updateData = { $set: { content: req.body.content } };
+    if (req.body.image) updateData["$set"].image = req.body.image;
 
-//     res.json(updatedPost);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
+    await Comment.findByIdAndUpdate(req.params.id, updateData);
+    const updatedComment = await Comment.findById(req.params.id);
 
-// // @DELETE  api/posts/:id
-// // @desc    Delete A Post
-// // @access  Private
-// router.delete("/:id", auth, async (req, res) => {
-//   try {
-//     const post = await Post.findById(req.params.id);
-//     if (!post) res.status(404).json({ msg: "Post does not exists" });
-//     if (post.owner !== req.user.id)
-//       res.status(403).json({ msg: "Access denied" });
+    res.json(updatedComment);
+  } catch (err) {
+    console.log(err);
+  }
+});
 
-//     await Post.findByIdAndDelete(req.params.id);
-//     res.json({ success: true });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
+// @DELETE  api/commets/:id
+// @desc    Delete A Comment
+// @access  Private
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) res.status(404).json({ msg: "Comment does not exists" });
+    const post = await Post.findById(comment.post);
+
+    if (comment.owner !== req.user.id && post.owner !== req.user.id)
+      res.status(403).json({ msg: "Access denied" });
+
+    await Comment.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 module.exports = router;
