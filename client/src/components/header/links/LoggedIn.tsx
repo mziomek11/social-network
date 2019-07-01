@@ -2,6 +2,7 @@ import React from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { Menu, Form } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 
 import { authActions } from "../../../store/auth";
 
@@ -10,16 +11,24 @@ type DispatchProps = {
 };
 
 const LoggedIn: React.FC<DispatchProps> = ({ logout }) => {
-  const handleClick = (e:React.FormEvent) => {
+  const handleClick = (e: React.FormEvent) => {
     e.preventDefault();
     logout();
-  }
+  };
   return (
     <React.Fragment>
-      <Menu.Item name="home" />
-      <Menu.Item name="profile" />
-      <Menu.Item name="messages" />
-      <Menu.Item name="friends" />
+      <Menu.Item as={Link} to="/">
+        Home
+      </Menu.Item>
+      <Menu.Item as={Link} to="/profile">
+        Profile
+      </Menu.Item>
+      <Menu.Item as={Link} to="/messages">
+        Messages
+      </Menu.Item>
+      <Menu.Item as={Link} to="/friends">
+        Friends
+      </Menu.Item>
       <Menu.Item position="right">
         <Form.Button primary onClick={handleClick}>
           Logout

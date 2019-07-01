@@ -1,8 +1,8 @@
 import React from "react";
 import { Container } from "semantic-ui-react";
 
-import Posts from "./Posts";
-import PostAddForm from "./PostAddForm";
+import Posts from "./post/Posts";
+import PostAddForm from "./post/PostAddForm";
 import MessageMenu from "./MessageMenu";
 import "./styles.scss";
 

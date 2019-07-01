@@ -7,10 +7,12 @@ import { RootState } from "MyTypes";
 import { authActions } from "./store/auth";
 import PrivateRoute from "./components/other/PrivateRoute";
 import Header from "./components/header";
+
 import LoginPage from "./components/pages/loggedOut/home";
-import LoggedInPage from "./components/pages/loggenIn/home/index";
-import UpdatePostPage from "./components/pages/loggenIn/update_post";
-import ShowPostPage from "./components/pages/loggenIn/show_post";
+import HomePage from "./components/pages/loggenIn/home/index";
+import ProfilePage from "./components/pages/loggenIn/profile";
+import MessagesPage from "./components/pages/loggenIn/messages";
+import FriendsPage from "./components/pages/loggenIn/friends";
 import "./styles.scss";
 
 type StateProps = {
@@ -35,13 +37,10 @@ class App extends React.Component<Props, {}> {
           <Header />
           <Switch>
             <Route exact path="/login" component={LoginPage} />
-            <PrivateRoute exact path="/" component={LoggedInPage} />
-            <PrivateRoute
-              exact
-              path="/post/:id/update"
-              component={UpdatePostPage}
-            />
-            <PrivateRoute exact path="/post/:id" component={ShowPostPage} />
+            <PrivateRoute exact path="/" component={HomePage} />
+            <PrivateRoute exact path="/profile" component={ProfilePage} />
+            <PrivateRoute exact path="/messages" component={MessagesPage} />
+            <PrivateRoute exact path="/friends" component={FriendsPage} />
           </Switch>
         </BrowserRouter>
       </React.Fragment>

@@ -1,18 +1,13 @@
 import React, { Component } from "react";
+import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { Form, Message, Button, Header } from "semantic-ui-react";
+
 import { RootState } from "MyTypes";
 import { authActions } from "../../../../store/auth";
 import { Register, BirthDate } from "../../../../store/auth/models";
 import DatePicker from "../../../other/DatePicker";
-import { Dispatch } from "redux";
-
-enum Gender {
-  Male = "Male",
-  Female = "Female",
-  Other = "Other",
-  None = ""
-}
+import { Gender } from "../../../../store/models";
 
 type State = {
   username: string;
@@ -144,11 +139,6 @@ class RegisterForm extends Component<Props, State> {
               label="Female"
               checked={this.state.gender === Gender.Female}
               onChange={() => this.setState({ gender: Gender.Female })}
-            />
-            <Form.Radio
-              label="Other"
-              checked={this.state.gender === Gender.Other}
-              onChange={() => this.setState({ gender: Gender.Other })}
             />
           </Form.Group>
         </Form.Input>

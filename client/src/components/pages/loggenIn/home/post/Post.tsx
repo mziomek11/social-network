@@ -1,16 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Card, Image, Icon, Form } from "semantic-ui-react";
+import { Card, Image, Icon } from "semantic-ui-react";
 
 import PostMenu from "./PostMenu";
+import CommentSection from "../comment/CommentSection";
+import Avatar from "../../../../other/Avatar";
 import { RootState } from "MyTypes";
-import { Post as PostType } from "../../../../store/post/models";
-import { User } from "../../../../store/auth/models";
+import { Post as PostType } from "../../../../../store/post/models";
+import { User } from "../../../../../store/auth/models";
 import { isNull } from "util";
 
 type OwnProps = {
   id: string;
-  showMenu?: boolean;
 };
 
 type StateProps = {
@@ -20,19 +21,14 @@ type StateProps = {
 
 type Props = OwnProps & StateProps;
 
-const Post: React.FC<Props> = ({ postData, id, user, showMenu=true }) => {
-  const [comment, setComment] = React.useState<string>("");
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(comment);
-    setComment("");
-  };
-  const { authorName, date, content, image, likedBy, comments } = postData;
+const Post: React.FC<Props> = ({ postData, id, user }) => {
+  const { authorName, date, content, image, likedBy, authorGender } = postData;
   const isPostOwner: boolean = !isNull(user) && user._id === postData.owner;
   return (
     <Card className="card-main">
       <Card.Content>
-        {isPostOwner && showMenu && <PostMenu id={id}/>}
+        {isPostOwner && <PostMenu id={id} />}
+        <Avatar gender={authorGender} />
         <Card.Header>{authorName}</Card.Header>
         <Card.Meta>{date.toString()}</Card.Meta>
         <Card.Description>{content}</Card.Description>
@@ -44,20 +40,11 @@ const Post: React.FC<Props> = ({ postData, id, user, showMenu=true }) => {
           {likedBy.length} {`like${likedBy.length !== 1 ? "s" : ""}`}
         </span>
         <Icon name="comment" />
-        <span>
-          {comments.length} {`comment${comments.length !== 1 ? "s" : ""}`}
-        </span>
+        <span>0 comments</span>
       </Card.Content>
-      <Form onSubmit={handleSubmit}>
-        <Form.Input
-          fluid
-          placeholder="Add comment..."
-          size="large"
-          value={comment}
-          onChange={e => setComment(e.target.value)}
-          className="card-input"
-        />
-      </Form>
+      <Card.Content>
+        <CommentSection id={id} />
+      </Card.Content>
     </Card>
   );
 };

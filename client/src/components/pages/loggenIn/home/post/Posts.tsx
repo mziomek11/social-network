@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 
 import { RootState } from "MyTypes";
 import PostElement from "./Post";
-import { postActions } from "../../../../store/post/";
+import { postActions } from "../../../../../store/post";
+import { commentActions } from "../../../../../store/comment";
 
 type StoreProps = {
   postsIds: string[];
@@ -12,6 +13,7 @@ type StoreProps = {
 
 type DispatchProps = {
   fetchPosts: () => void;
+  fetchComments: () => void;
 };
 
 type Props = StoreProps & DispatchProps;
@@ -19,6 +21,7 @@ type Props = StoreProps & DispatchProps;
 class Posts extends Component<Props, {}> {
   componentDidMount() {
     this.props.fetchPosts();
+    this.props.fetchComments();
   }
   render() {
     const { postsIds } = this.props;
@@ -34,14 +37,14 @@ class Posts extends Component<Props, {}> {
 
 const mapStateToProps = (state: RootState): StoreProps => {
   return {
-    postsIds: state.post.allIds,
-
+    postsIds: state.post.allIds
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    fetchPosts: () => dispatch(postActions.fetchPosts())
+    fetchPosts: () => dispatch(postActions.fetchPosts()),
+    fetchComments: () => dispatch(commentActions.fetchComments())
   };
 };
 

@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const PostSchema = new Schema({
+const CommentSchema = new Schema({
+  post: {
+    type: String,
+    required: true
+  },
   owner: {
     type: String,
     required: true
@@ -33,4 +37,4 @@ const PostSchema = new Schema({
   }
 });
 
-module.exports = Post = mongoose.model("post", PostSchema);
+module.exports = Comment = mongoose.model("comments", CommentSchema);

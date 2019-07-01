@@ -1,26 +1,11 @@
-interface Opinion {
-  _id: string;
-  owner: string;
-  authorName: string;
-  content: string | null;
-  date: Date;
-  likedBy: string[];
-}
+import { Opinion, AddOpinionData } from "../models";
 
 export interface Post extends Opinion {
   image: string | null;
-  comments: Comment[];
-}
-
-interface Comment extends Opinion {
-  commentAnswers: Comment[];
 }
 
 export type PostsById = {
   [id: string]: Post;
 };
 
-export type AddPostData = {
-  content: string;
-  image?: string;
-};
+export interface AddPostData extends AddOpinionData {}

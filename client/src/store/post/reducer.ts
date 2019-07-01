@@ -5,9 +5,6 @@ import {
   FETCH_POSTS,
   FETCH_POSTS_SUCCESS,
   FETCH_POSTS_FAILED,
-  GET_POST,
-  GET_POST_SUCCESS,
-  GET_POST_FAILED,
   DELETE_POST,
   DELETE_POST_SUCCESS,
   DELETE_POST_FAILED,
@@ -50,7 +47,6 @@ export default combineReducers<PostState, PostAction>({
   byId: (state = initState.byId, action) => {
     switch (action.type) {
       case FETCH_POSTS_SUCCESS:
-      case GET_POST_SUCCESS:
       case DELETE_POST_SUCCESS:
       case ADD_POST_SUCCESS:
       case UPDATE_POST_SUCCESS:
@@ -63,13 +59,11 @@ export default combineReducers<PostState, PostAction>({
     switch (action.type) {
       case FETCH_POSTS_SUCCESS:
         return [...action.payload.ids];
-      case GET_POST_SUCCESS:
-      case UPDATE_POST_SUCCESS:
-        return [action.payload.id];
       case DELETE_POST_SUCCESS:
         return [...state].filter(id => id !== action.payload.id);
       case ADD_POST_SUCCESS:
         return [action.payload.id, ...state];
+      case UPDATE_POST_SUCCESS:
       default:
         return state;
     }
@@ -81,11 +75,6 @@ export default combineReducers<PostState, PostAction>({
       case FETCH_POSTS_SUCCESS:
       case FETCH_POSTS_FAILED:
         return { ...state, fetchingPosts: false };
-      case GET_POST:
-        return { ...state, gettingPost: true };
-      case GET_POST_SUCCESS:
-      case GET_POST_FAILED:
-        return { ...state, gettingPost: false };
       case DELETE_POST:
         return { ...state, deletingPost: true };
       case DELETE_POST_SUCCESS:

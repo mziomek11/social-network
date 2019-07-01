@@ -79,7 +79,7 @@ const validateRegisterRequest = body => {
   if (!isDateProper(birthDate)) {
     errors.birthDate = "Enter correct date";
   }
-  if (gender !== "Male" && gender !== "Female" && gender !== "Other") {
+  if (gender !== "Male" && gender !== "Female") {
     errors.gender = "Gender field is required";
   }
   return errors;

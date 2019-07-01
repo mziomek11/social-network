@@ -10,8 +10,6 @@ import { apiPath, tokenHeaders } from "../../api";
 const {
   fetchPostsSuccess,
   fetchPostsFailed,
-  getPostSuccess,
-  getPostFailed,
   addPostSuccess,
   addPostFailed,
   deletePostSuccess,
@@ -30,20 +28,6 @@ export const fetchPosts: Epic<RootAction, RootAction, RootState> = (
       ajax.get(apiPath + "posts/", tokenHeaders(state$.value)).pipe(
         map(({ response }) => fetchPostsSuccess(response)),
         catchError(() => of(fetchPostsFailed()))
-      )
-    )
-  );
-
-export const getPost: Epic<RootAction, RootAction, RootState> = (
-  action$,
-  state$
-) =>
-  action$.pipe(
-    filter(isOfType(postConstants.GET_POST)),
-    switchMap(({ payload }) =>
-      ajax.get(`${apiPath}posts/${payload}`, tokenHeaders(state$.value)).pipe(
-        map(({ response }) => getPostSuccess(response)),
-        catchError(() => of(getPostFailed()))
       )
     )
   );
@@ -92,7 +76,9 @@ export const update: Epic<RootAction, RootAction, RootState> = (
           tokenHeaders(state$.value)
         )
         .pipe(
-          map(({ response }) => updatePostSuccess(response)),
+          map(({ response }) =>
+            updatePostSuccess(state$.value.post.byId, response)
+          ),
           catchError(() => of(updatePostFailed()))
         )
     )
