@@ -1,0 +1,1 @@
+export const deepCopy = (o: Object) => JSON.parse(JSON.stringify(o));

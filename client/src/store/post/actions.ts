@@ -1,5 +1,6 @@
 import { action } from "typesafe-actions";
 
+import {deepCopy} from "../../utils";
 import {
   FETCH_POSTS,
   FETCH_POSTS_SUCCESS,
@@ -56,5 +57,3 @@ export const deletePostSuccess = (oldPosts: PostsById, id: string) => {
   const payload = { newById: newPosts, id };
   return action(DELETE_POST_SUCCESS, payload);
 };
-
-const deepCopy = (o: Object) => JSON.parse(JSON.stringify(o));

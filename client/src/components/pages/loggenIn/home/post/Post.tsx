@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import { connect } from "react-redux";
 import { Card, Image, Icon } from "semantic-ui-react";
 import { isNull } from "util";
@@ -17,11 +18,12 @@ type OwnProps = {
 type StateProps = {
   postData: PostType;
   user: User | null;
+  commentsCount: number;
 };
 
 type Props = OwnProps & StateProps;
 
-const Post: React.FC<Props> = ({ postData, id, user }) => {
+const Post: React.FC<Props> = ({ postData, id, user, commentsCount }) => {
   const { authorName, date, content, image, likedBy, authorGender } = postData;
   const isPostOwner: boolean = !isNull(user) && user._id === postData.owner;
   return (
@@ -30,7 +32,7 @@ const Post: React.FC<Props> = ({ postData, id, user }) => {
         {isPostOwner && <PostMenu id={id} />}
         <Avatar gender={authorGender} />
         <Card.Header>{authorName}</Card.Header>
-        <Card.Meta>{date.toString()}</Card.Meta>
+        <Card.Meta>{moment(date).fromNow()}</Card.Meta>
         <Card.Description>{content}</Card.Description>
       </Card.Content>
       {image && <Image src={image} />}
@@ -40,10 +42,10 @@ const Post: React.FC<Props> = ({ postData, id, user }) => {
           {likedBy.length} {`like${likedBy.length !== 1 ? "s" : ""}`}
         </span>
         <Icon name="comment" />
-        <span>0 comments</span>
+        <span>{commentsCount ? commentsCount : 0} comments</span>
       </Card.Content>
       <Card.Content>
-        <CommentSection id={id} />
+        <CommentSection id={id} commentCount={commentsCount} />
       </Card.Content>
     </Card>
   );
@@ -52,7 +54,8 @@ const Post: React.FC<Props> = ({ postData, id, user }) => {
 const mapStateToProps = (state: RootState, ownProps: OwnProps): StateProps => {
   return {
     postData: state.post.byId[ownProps.id],
-    user: state.auth.user
+    user: state.auth.user,
+    commentsCount: state.comment.countByPostId[ownProps.id]
   };
 };
 

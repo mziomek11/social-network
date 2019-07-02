@@ -1,5 +1,6 @@
 import { action } from "typesafe-actions";
 
+import {deepCopy} from "../../utils";
 import {
   FETCH_COMMENTS,
   FETCH_COMMENTS_SUCCESS,
@@ -12,7 +13,8 @@ import {
   FETCH_COMMENTS_FAILED,
   ADD_COMMENT_FAILED,
   UPDATE_COMMENT_FAILED,
-  DELETE_COMMENT_FAILED
+  DELETE_COMMENT_FAILED,
+  SET_COMMENTS_COUNT
 } from "./constants";
 import { CommentsById, Comment, AddCommentData } from "./models";
 
@@ -66,4 +68,6 @@ export const deleteCommentSuccess = (oldComments: CommentsById, id: string) => {
   return action(DELETE_COMMENT_SUCCESS, payload);
 };
 
-const deepCopy = (o: Object) => JSON.parse(JSON.stringify(o));
+export const setCommentCount = (id: string, count: number) =>
+  action(SET_COMMENTS_COUNT, { id, count });
+

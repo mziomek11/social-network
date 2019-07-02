@@ -57,6 +57,7 @@ class CommentUpdate extends React.Component<Props, State> {
           value={this.state.content}
           onChange={e => this.setState({ content: e.target.value })}
           size="small"
+          className="comment-update-input"
         />
       </Form>
     );

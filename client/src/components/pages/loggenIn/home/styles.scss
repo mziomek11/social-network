@@ -80,6 +80,18 @@ textarea {
   }
 }
 
+.commets-show-more {
+  color: #4183c4;
+  &:hover {
+    color: #1e70bf;
+    cursor: pointer;
+  }
+}
+
 .comment-update-form {
-    margin-top: 10px;
+  transform: translateY(-14px);
+
+  .comment-update-input input {
+    margin-right: 30px !important;
+  }
 }

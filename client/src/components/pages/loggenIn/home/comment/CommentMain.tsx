@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Comment } from "semantic-ui-react";
@@ -33,15 +34,6 @@ const CommentElement: React.FC<Props> = ({ comment, user, post }) => {
     !isNull(user) && (user._id === post.owner || user._id === comment.owner);
   const canUpdate: boolean = !isNull(user) && user._id === comment.owner;
 
-  if (updating)
-    return (
-      <CommentUpdate
-        id={comment._id}
-        postId={post._id}
-        startContent={content}
-        onUpdateDone={() => setUpdating(false)}
-      />
-    );
   return (
     <Comment>
       <Comment.Avatar src={getImage(authorGender)} />
@@ -58,11 +50,27 @@ const CommentElement: React.FC<Props> = ({ comment, user, post }) => {
           {authorName}
         </Comment.Author>
         <Comment.Metadata>
-          <div>{date}</div>
+          <div>{moment(date).fromNow()}</div>
         </Comment.Metadata>
-        <Comment.Text>{content}</Comment.Text>
+        {updating ? (
+          <CommentUpdate
+            id={comment._id}
+            postId={post._id}
+            startContent={content}
+            onUpdateDone={() => setUpdating(false)}
+          />
+        ) : (
+          <Comment.Text>{content}</Comment.Text>
+        )}
+
         <Comment.Actions>
-          {!updating && <Comment.Action>Reply</Comment.Action>}
+          {updating ? (
+            <Comment.Action onClick={() => setUpdating(false)}>
+              Cancel
+            </Comment.Action>
+          ) : (
+            <Comment.Action>Reply</Comment.Action>
+          )}
         </Comment.Actions>
       </Comment.Content>
     </Comment>

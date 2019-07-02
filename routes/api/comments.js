@@ -5,12 +5,12 @@ const router = express.Router();
 // Impoering model
 const Comment = require("../../models/Comment");
 
-// @GET     api/comments/:postid
-// @desc    Get All Post Comments
+// @GET     api/comments/
+// @desc    Get All Comments
 // @access  Private
 router.get("/", auth, (req, res) => {
   Comment.find()
-    .sort({ date: -1 })
+    .sort({ date: 1 })
     .then(comments => res.json(comments));
 });
 

@@ -6,10 +6,10 @@ import manImage from "../../images/avatar-male.png";
 import womanImage from "../../images/avatar-female.png";
 
 type OwnProps = {
-  gender: Gender;
+  gender?: Gender;
 };
 
-const Avatar: React.FC<OwnProps> = ({ gender }) => {
+const Avatar: React.FC<OwnProps> = ({ gender=Gender.Male }) => {
   return (
     <Image
       src={getImage(gender)}

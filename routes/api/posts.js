@@ -21,7 +21,6 @@ router.get("", auth, (req, res) => {
 router.post("", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    console.log(user)
     const postData = {
       content: req.body.content,
       owner: req.user.id,

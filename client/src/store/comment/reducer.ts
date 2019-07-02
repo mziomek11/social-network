@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import { ActionType } from "typesafe-actions";
 
+import { deepCopy } from "../../utils";
 import {
   FETCH_COMMENTS,
   FETCH_COMMENTS_SUCCESS,
@@ -13,7 +14,8 @@ import {
   ADD_COMMENT_FAILED,
   UPDATE_COMMENT,
   UPDATE_COMMENT_SUCCESS,
-  UPDATE_COMMENT_FAILED
+  UPDATE_COMMENT_FAILED,
+  SET_COMMENTS_COUNT
 } from "./constants";
 import { CommentsById } from "./models";
 import * as actions from "./actions";
@@ -29,6 +31,7 @@ type CommentState = Readonly<{
     addingComment: boolean;
     updatingComment: boolean;
   };
+  countByPostId: { [postId: string]: number };
 }>;
 
 const initState: CommentState = {
@@ -40,7 +43,8 @@ const initState: CommentState = {
     deletingComment: false,
     addingComment: false,
     updatingComment: false
-  }
+  },
+  countByPostId: {}
 };
 
 export default combineReducers<CommentState, CommentAction>({
@@ -63,7 +67,7 @@ export default combineReducers<CommentState, CommentAction>({
       case DELETE_COMMENT_SUCCESS:
         return [...state].filter(id => id !== action.payload.id);
       case ADD_COMMENT_SUCCESS:
-        return [action.payload.id, ...state];
+        return [...state, action.payload.id];
       case UPDATE_COMMENT_SUCCESS:
       default:
         return state;
@@ -91,6 +95,16 @@ export default combineReducers<CommentState, CommentAction>({
       case UPDATE_COMMENT_SUCCESS:
       case UPDATE_COMMENT_FAILED:
         return { ...state, updatingComment: false };
+      default:
+        return state;
+    }
+  },
+  countByPostId: (state = initState.countByPostId, action) => {
+    switch (action.type) {
+      case SET_COMMENTS_COUNT:
+        const newState = deepCopy(state);
+        newState[action.payload.id] = action.payload.count;
+        return newState;
       default:
         return state;
     }

@@ -1,7 +1,15 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const PostSchema = new Schema({
+const SubCommentSchema = new Schema({
+  post: {
+    type: String,
+    required: true
+  },
+  comment: {
+    type: String,
+    required: true
+  },
   owner: {
     type: String,
     required: true
@@ -33,4 +41,4 @@ const PostSchema = new Schema({
   }
 });
 
-module.exports = Post = mongoose.model("post", PostSchema);
+module.exports = SubComment = mongoose.model("subcomments", SubCommentSchema);
