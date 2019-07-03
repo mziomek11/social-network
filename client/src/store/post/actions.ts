@@ -1,6 +1,6 @@
 import { action } from "typesafe-actions";
 
-import {deepCopy} from "../../utils";
+import { deepCopy } from "../../utils";
 import {
   FETCH_POSTS,
   FETCH_POSTS_SUCCESS,
@@ -16,6 +16,7 @@ import {
   DELETE_POST_FAILED
 } from "./constants";
 import { PostsById, Post, AddPostData } from "./models";
+import { UpdateOpinionData } from "../models";
 
 export const fetchPosts = () => action(FETCH_POSTS);
 export const fetchPostsFailed = () => action(FETCH_POSTS_FAILED);
@@ -39,7 +40,7 @@ export const addPostSuccess = (oldPosts: PostsById, { _id, ...rest }: Post) => {
   return action(ADD_POST_SUCCESS, payload);
 };
 
-export const updatePost = (id: string, data: AddPostData) =>
+export const updatePost = (id: string, data: UpdateOpinionData) =>
   action(UPDATE_POST, { id, data });
 export const updatePostFailed = () => action(UPDATE_POST_FAILED);
 export const updatePostSuccess = (oldPosts: PostsById, updatedPost: Post) => {

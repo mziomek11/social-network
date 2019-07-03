@@ -5,20 +5,20 @@ import { Form } from "semantic-ui-react";
 
 import { RootState } from "MyTypes";
 import { UpdateOpinionData } from "../../../../../store/models";
-import { updateComment } from "../../../../../store/comment/actions";
+import { updateSubComment } from "../../../../../store/subComment/actions";
 
 type OwnProps = {
-  commentId: string;
+  subCommentId: string;
   startContent: string;
   onUpdateDone: () => void;
 };
 
 type StateProps = {
-  updatingComment: boolean;
+  updatingSubComment: boolean;
 };
 
 type DispatchProps = {
-  updateComment: (data: UpdateOpinionData) => void;
+  updateSubComment: (data: UpdateOpinionData) => void;
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -27,7 +27,7 @@ type State = Readonly<{
   content: string;
 }>;
 
-class CommentUpdate extends React.Component<Props, State> {
+class SubCommentUpdate extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -37,16 +37,16 @@ class CommentUpdate extends React.Component<Props, State> {
   componentDidMount() {
     this.setState({ content: this.props.startContent });
   }
-  componentWillReceiveProps({ updatingComment }: Props) {
-    if (this.props.updatingComment && !updatingComment)
+  componentWillReceiveProps({ updatingSubComment }: Props) {
+    if (this.props.updatingSubComment && !updatingSubComment)
       this.props.onUpdateDone();
   }
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const { updateComment } = this.props;
+    const { updateSubComment } = this.props;
     const { content } = this.state;
     if (content.length > 0) {
-      updateComment({ content });
+      updateSubComment({ content });
     }
   };
   render() {
@@ -66,21 +66,21 @@ class CommentUpdate extends React.Component<Props, State> {
 
 const mapStateToProps = (state: RootState): StateProps => {
   return {
-    updatingComment: state.comment.status.updatingComment
+    updatingSubComment: state.subComment.status.updatingSubComment
   };
 };
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { commentId }: OwnProps
+  { subCommentId }: OwnProps
 ): DispatchProps => {
   return {
-    updateComment: (data: UpdateOpinionData) =>
-      dispatch(updateComment(commentId, data))
+    updateSubComment: (data: UpdateOpinionData) =>
+      dispatch(updateSubComment(subCommentId, data))
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CommentUpdate);
+)(SubCommentUpdate);

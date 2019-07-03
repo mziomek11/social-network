@@ -4,11 +4,11 @@ import { connect } from "react-redux";
 import { Icon, Menu, Loader } from "semantic-ui-react";
 
 import { RootState } from "MyTypes";
-import { postActions } from "../../../../../store/post";
+import { deletePost } from "../../../../../store/post/actions";
 import PostUpdate from "./PostUpdate";
 
 type DispatchProps = {
-  deletePost: (id: string) => void;
+  deletePost: () => void;
 };
 
 type StateProps = {
@@ -16,7 +16,7 @@ type StateProps = {
 };
 
 type OwnProps = {
-  id: string;
+  postId: string;
 };
 
 type Props = DispatchProps & StateProps & OwnProps;
@@ -46,11 +46,11 @@ class PostMenu extends React.Component<Props, State> {
       this.setState({ isOpen: false });
     }
   };
-  handleDeleteClick = () => this.props.deletePost(this.props.id);
+  handleDeleteClick = () => this.props.deletePost();
   handleUpdateClick = () => this.setState({ isOpen: false, isUpdating: true });
   render() {
     const { isOpen, isUpdating } = this.state;
-    const { id, deletingPost } = this.props;
+    const { postId, deletingPost } = this.props;
     return (
       <div className="card-menu-container" ref={this.toggleContainer}>
         <Icon
@@ -60,7 +60,7 @@ class PostMenu extends React.Component<Props, State> {
         />
         {isUpdating && (
           <PostUpdate
-            id={id}
+            postId={postId}
             closeWindow={() => this.setState({ isUpdating: false })}
           />
         )}
@@ -93,9 +93,12 @@ const mapStateToProps = (state: RootState): StateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  { postId }: OwnProps
+): DispatchProps => {
   return {
-    deletePost: (id: string) => dispatch(postActions.deletePost(id))
+    deletePost: () => dispatch(deletePost(postId))
   };
 };
 

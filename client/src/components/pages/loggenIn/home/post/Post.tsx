@@ -12,7 +12,7 @@ import { Post as PostType } from "../../../../../store/post/models";
 import { User } from "../../../../../store/auth/models";
 
 type OwnProps = {
-  id: string;
+  postId: string;
 };
 
 type StateProps = {
@@ -23,13 +23,13 @@ type StateProps = {
 
 type Props = OwnProps & StateProps;
 
-const Post: React.FC<Props> = ({ postData, id, user, commentsCount }) => {
+const Post: React.FC<Props> = ({ postData, postId, user, commentsCount }) => {
   const { authorName, date, content, image, likedBy, authorGender } = postData;
   const isPostOwner: boolean = !isNull(user) && user._id === postData.owner;
   return (
     <Card className="card-main">
       <Card.Content>
-        {isPostOwner && <PostMenu id={id} />}
+        {isPostOwner && <PostMenu postId={postId} />}
         <Avatar gender={authorGender} />
         <Card.Header>{authorName}</Card.Header>
         <Card.Meta>{moment(date).fromNow()}</Card.Meta>
@@ -42,20 +42,26 @@ const Post: React.FC<Props> = ({ postData, id, user, commentsCount }) => {
           {likedBy.length} {`like${likedBy.length !== 1 ? "s" : ""}`}
         </span>
         <Icon name="comment" />
-        <span>{commentsCount ? commentsCount : 0} comments</span>
+        <span>
+          {commentsCount ? commentsCount : 0}{" "}
+          {`comment${commentsCount !== 1 ? "s" : ""}`}
+        </span>
       </Card.Content>
       <Card.Content>
-        <CommentSection id={id} commentCount={commentsCount} />
+        <CommentSection postId={postId} commentCount={commentsCount} />
       </Card.Content>
     </Card>
   );
 };
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps): StateProps => {
+const mapStateToProps = (
+  state: RootState,
+  { postId }: OwnProps
+): StateProps => {
   return {
-    postData: state.post.byId[ownProps.id],
+    postData: state.post.byId[postId],
     user: state.auth.user,
-    commentsCount: state.comment.countByPostId[ownProps.id]
+    commentsCount: state.comment.countByPostId[postId]
   };
 };
 

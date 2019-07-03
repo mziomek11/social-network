@@ -6,59 +6,57 @@ import { Link } from "react-router-dom";
 import { Comment } from "semantic-ui-react";
 import { isNull } from "util";
 
-import CommentMenu from "./CommentMenu";
-import CommentUpdate from "./CommentUpdate";
-import SubCommentSection from "../subComment/SubCommentSection";
+import SubCommentMenu from "./SubCommentMenu";
+import SubCommentUpdate from "./SubCommentUpdate";
 import { openReplying } from "../../../../../store/comment/actions";
 import { getImage } from "../../../../other/Avatar";
 import { RootState } from "MyTypes";
-import { Comment as CommentType } from "../../../../../store/comment/models";
+import { SubComment as SubCommentType } from "../../../../../store/subComment/models";
 import { User } from "../../../../../store/auth/models";
 import { Post } from "../../../../../store/post/models";
-
-type OwnProps = {
-  commentId: string;
-  postId: string;
-};
 
 type DispatchProps = {
   openReplying: () => void;
 };
 
+
+type OwnProps = {
+  subCommentId: string;
+  postId: string;
+  commentId: string;
+};
+
 type StateProps = {
-  comment: CommentType;
-  subCommentsCount: number;
+  subComment: SubCommentType;
   post: Post;
   user: User | null;
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
 
-const CommentElement: React.FC<Props> = ({
-  comment,
+const SubCommentElement: React.FC<Props> = ({
+  subComment,
   user,
   post,
-  commentId,
-  postId,
-  subCommentsCount,
+  subCommentId,
   openReplying
 }) => {
   const [updating, setUpdating] = React.useState<boolean>(false);
-  const { owner, content, date, authorName, authorGender } = comment;
+  const { owner, content, date, authorName, authorGender } = subComment;
 
   const canDelete: boolean =
-    !isNull(user) && (user._id === post.owner || user._id === comment.owner);
-  const canUpdate: boolean = !isNull(user) && user._id === comment.owner;
+    !isNull(user) && (user._id === post.owner || user._id === subComment.owner);
+  const canUpdate: boolean = !isNull(user) && user._id === subComment.owner;
 
   return (
     <Comment>
       <Comment.Avatar src={getImage(authorGender)} />
       {(canDelete || canUpdate) && !updating && (
-        <CommentMenu
+        <SubCommentMenu
           canDelete={canDelete}
           canUpdate={canUpdate}
           onUpdateClick={() => setUpdating(true)}
-          commentId={commentId}
+          subCommentId={subCommentId}
         />
       )}
       <Comment.Content>
@@ -69,8 +67,8 @@ const CommentElement: React.FC<Props> = ({
           <div>{moment(date).fromNow()}</div>
         </Comment.Metadata>
         {updating ? (
-          <CommentUpdate
-            commentId={commentId}
+          <SubCommentUpdate
+            subCommentId={subCommentId}
             startContent={content}
             onUpdateDone={() => setUpdating(false)}
           />
@@ -84,28 +82,20 @@ const CommentElement: React.FC<Props> = ({
               Cancel
             </Comment.Action>
           ) : (
-            <Comment.Action onClick={() => openReplying()}>
-              Reply
-            </Comment.Action>
+            <Comment.Action onClick={() => openReplying()}>Reply</Comment.Action>
           )}
         </Comment.Actions>
       </Comment.Content>
-      <SubCommentSection
-        postId={postId}
-        commentId={commentId}
-        subCommentsCount={subCommentsCount}
-      />
     </Comment>
   );
 };
 
 const mapStateToProps = (
   state: RootState,
-  { commentId, postId }: OwnProps
+  { subCommentId, postId }: OwnProps
 ): StateProps => {
   return {
-    comment: state.comment.byId[commentId],
-    subCommentsCount: state.subComment.countByCommentId[commentId],
+    subComment: state.subComment.byId[subCommentId],
     post: state.post.byId[postId],
     user: state.auth.user
   };
@@ -120,7 +110,4 @@ const mapDispatchToProps = (
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommentElement);
+export default connect(mapStateToProps, mapDispatchToProps)(SubCommentElement);

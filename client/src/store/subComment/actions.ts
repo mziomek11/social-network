@@ -17,6 +17,7 @@ import {
   SET_SUBCOMMENTS_COUNT
 } from "./constants";
 import { SubCommentsById, SubComment, AddSubCommentData } from "./models";
+import { UpdateOpinionData } from "../models";
 
 export const fetchSubComments = () => action(FETCH_SUBCOMMENTS);
 export const fetchSubCommentsFailed = () => action(FETCH_SUBCOMMENTS_FAILED);
@@ -46,7 +47,7 @@ export const addSubCommentSuccess = (
   return action(ADD_SUBCOMMENT_SUCCESS, payload);
 };
 
-export const updateSubComment = (id: string, data: AddSubCommentData) =>
+export const updateSubComment = (id: string, data: UpdateOpinionData) =>
   action(UPDATE_SUBCOMMENT, { id, data });
 export const updateSubCommentFailed = () => action(UPDATE_SUBCOMMENT_FAILED);
 export const updateSubCommentSuccess = (

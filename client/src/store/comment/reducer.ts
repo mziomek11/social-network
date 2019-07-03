@@ -15,7 +15,9 @@ import {
   UPDATE_COMMENT,
   UPDATE_COMMENT_SUCCESS,
   UPDATE_COMMENT_FAILED,
-  SET_COMMENTS_COUNT
+  SET_COMMENTS_COUNT,
+  CLOSE_REPLYING,
+  OPEN_REPLYING
 } from "./constants";
 import { CommentsById } from "./models";
 import * as actions from "./actions";
@@ -32,6 +34,7 @@ type CommentState = Readonly<{
     updatingComment: boolean;
   };
   countByPostId: { [postId: string]: number };
+  replyingOpen: string[];
 }>;
 
 const initState: CommentState = {
@@ -44,7 +47,8 @@ const initState: CommentState = {
     addingComment: false,
     updatingComment: false
   },
-  countByPostId: {}
+  countByPostId: {},
+  replyingOpen: []
 };
 
 export default combineReducers<CommentState, CommentAction>({
@@ -105,6 +109,18 @@ export default combineReducers<CommentState, CommentAction>({
         const newState = deepCopy(state);
         newState[action.payload.id] = action.payload.count;
         return newState;
+      default:
+        return state;
+    }
+  },
+  replyingOpen: (state = initState.replyingOpen, action) => {
+    switch (action.type) {
+      case OPEN_REPLYING:
+        return state.indexOf(action.payload) >= 0
+          ? state
+          : [...state, action.payload];
+      case CLOSE_REPLYING:
+        return [...state].filter(id => id !== action.payload);
       default:
         return state;
     }

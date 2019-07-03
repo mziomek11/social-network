@@ -3,10 +3,10 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { Form } from "semantic-ui-react";
 
-import { commentActions } from "../../../../../store/comment";
+import { addComment } from "../../../../../store/comment/actions";
 
 type OwnProps = {
-  id: string;
+  postId: string;
 };
 
 type DispatchProps = {
@@ -17,35 +17,42 @@ type Props = OwnProps & DispatchProps;
 
 const CommentAddForm: React.FC<Props> = ({ addComment }) => {
   const [comment, setComment] = React.useState<string>("");
+  const [isTyping, setIsTyping] = React.useState<boolean>(false);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (comment.length === 0) return;
     addComment(comment);
     setComment("");
+    setIsTyping(false);
   };
-  return (
+  return isTyping ? (
     <Form onSubmit={handleSubmit}>
       <Form.Input
         fluid
-        placeholder="Add comment..."
-        size="large"
+        placeholder="Your comment..."
+        size="small"
         value={comment}
         onChange={e => setComment(e.target.value)}
         className="card-input"
+        autoFocus
       />
     </Form>
+  ) : (
+    <span className="comments-clickable" onClick={() => setIsTyping(true)}>
+      Write comment...
+    </span>
   );
 };
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  ownProps: OwnProps
+  { postId }: OwnProps
 ): DispatchProps => {
   return {
     addComment: (content: string) =>
       dispatch(
-        commentActions.addComment({
-          postId: ownProps.id,
+        addComment({
+          postId,
           content
         })
       )

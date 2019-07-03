@@ -1,6 +1,6 @@
 import { action } from "typesafe-actions";
 
-import {deepCopy} from "../../utils";
+import { deepCopy } from "../../utils";
 import {
   FETCH_COMMENTS,
   FETCH_COMMENTS_SUCCESS,
@@ -14,9 +14,12 @@ import {
   ADD_COMMENT_FAILED,
   UPDATE_COMMENT_FAILED,
   DELETE_COMMENT_FAILED,
-  SET_COMMENTS_COUNT
+  SET_COMMENTS_COUNT,
+  OPEN_REPLYING,
+  CLOSE_REPLYING
 } from "./constants";
 import { CommentsById, Comment, AddCommentData } from "./models";
+import { UpdateOpinionData } from "../models";
 
 export const fetchComments = () => action(FETCH_COMMENTS);
 export const fetchCommentsFailed = () => action(FETCH_COMMENTS_FAILED);
@@ -46,7 +49,7 @@ export const addCommentSuccess = (
   return action(ADD_COMMENT_SUCCESS, payload);
 };
 
-export const updateComment = (id: string, data: AddCommentData) =>
+export const updateComment = (id: string, data: UpdateOpinionData) =>
   action(UPDATE_COMMENT, { id, data });
 export const updateCommentFailed = () => action(UPDATE_COMMENT_FAILED);
 export const updateCommentSuccess = (
@@ -71,3 +74,5 @@ export const deleteCommentSuccess = (oldComments: CommentsById, id: string) => {
 export const setCommentCount = (id: string, count: number) =>
   action(SET_COMMENTS_COUNT, { id, count });
 
+export const openReplying = (id: string) => action(OPEN_REPLYING, id);
+export const closeReplying = (id: string) => action(CLOSE_REPLYING, id);

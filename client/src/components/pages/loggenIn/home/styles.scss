@@ -42,9 +42,8 @@ textarea {
   }
 
   .card-input {
-    input:focus {
-      border-color: transparent !important;
-      outline: none;
+    input {
+      background: rgb(248, 248, 248) !important;
     }
   }
 }
@@ -80,7 +79,7 @@ textarea {
   }
 }
 
-.commets-show-more {
+.comments-clickable {
   color: #4183c4;
   &:hover {
     color: #1e70bf;
@@ -95,3 +94,27 @@ textarea {
     margin-right: 30px !important;
   }
 }
+
+.subcommets-show-more {
+  margin-left: 21px;
+  padding-top: 8px;
+}
+
+// .subcomments-form-container {
+//   max-height: 79.5px !important;
+//   height: 79.5px !important;
+//   overflow: hidden !important;
+// }
+
+// .subcomments-form {
+//   transform: translateY(3px);
+// }
+
+// .subcomments-form-actions{
+//   transform: translateY(5px);
+// }
+
+// .subcomments-form-input {
+//   // margin-left: 65px !important;
+//   margin-right: 30px !important;
+// }

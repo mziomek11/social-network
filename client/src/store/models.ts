@@ -13,6 +13,8 @@ export interface AddOpinionData {
   image?: string;
 }
 
+export interface UpdateOpinionData extends AddOpinionData {}
+
 export enum Gender {
   Male = "Male",
   Female = "Female",

@@ -4,11 +4,11 @@ import AddForm from "./CommentAddForm";
 import Comments from "./Comments";
 
 type OwnProps = {
-  id: string;
+  postId: string;
   commentCount: number;
 };
 
-const CommentSection: React.FC<OwnProps> = ({ id, commentCount }) => {
+const CommentSection: React.FC<OwnProps> = ({ postId, commentCount }) => {
   const [commentsToShow, setCommnetsToShow] = React.useState<number>(2);
   const commentsPerAdd: number = 5;
   const canShowMoreComments: boolean = commentsToShow < commentCount;
@@ -16,14 +16,14 @@ const CommentSection: React.FC<OwnProps> = ({ id, commentCount }) => {
     <React.Fragment>
       {canShowMoreComments && (
         <span
-          className="commets-show-more"
+          className="comments-clickable"
           onClick={() => setCommnetsToShow(commentsToShow + commentsPerAdd)}
         >
           Show more comments
         </span>
       )}
-      <Comments id={id} toShow={commentsToShow} />
-      <AddForm id={id} />
+      <Comments postId={postId} commentstoShow={commentsToShow} />
+      <AddForm postId={postId} />
     </React.Fragment>
   );
 };

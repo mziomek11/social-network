@@ -4,18 +4,18 @@ import { connect } from "react-redux";
 import { Icon, Menu, Loader } from "semantic-ui-react";
 
 import { RootState } from "MyTypes";
-import { deleteComment } from "../../../../../store/comment/actions";
+import { deleteSubComment } from "../../../../../store/subComment/actions";
 
 type DispatchProps = {
-  deleteComment: () => void;
+  deleteSubComment: () => void;
 };
 
 type StateProps = {
-  deletingComment: boolean;
+  deletingSubComment: boolean;
 };
 
 type OwnProps = {
-  commentId: string;
+  subCommentId: string;
   onUpdateClick: () => void;
   canDelete: boolean;
   canUpdate: boolean;
@@ -27,7 +27,7 @@ type State = {
   isOpen: boolean;
 };
 
-class CommentMenu extends React.Component<Props, State> {
+class SubCommentMenu extends React.Component<Props, State> {
   private toggleContainer: React.RefObject<HTMLDivElement>;
   constructor(props: Props) {
     super(props);
@@ -47,14 +47,14 @@ class CommentMenu extends React.Component<Props, State> {
       this.setState({ isOpen: false });
     }
   };
-  handleDeleteClick = () => this.props.deleteComment();
+  handleDeleteClick = () => this.props.deleteSubComment();
   handleUpdateClick = () => {
     this.setState({ isOpen: false });
     this.props.onUpdateClick();
   };
   render() {
     const { isOpen } = this.state;
-    const { canDelete, canUpdate, deletingComment } = this.props;
+    const { canDelete, canUpdate, deletingSubComment } = this.props;
     return (
       <div className="card-menu-container" ref={this.toggleContainer}>
         <Icon
@@ -66,7 +66,7 @@ class CommentMenu extends React.Component<Props, State> {
           <Menu vertical className="card-menu" size="small">
             {canDelete && (
               <Menu.Item onClick={this.handleDeleteClick}>
-                {deletingComment ? (
+                {deletingSubComment ? (
                   <Loader active size="tiny" />
                 ) : (
                   <React.Fragment>
@@ -91,20 +91,20 @@ class CommentMenu extends React.Component<Props, State> {
 
 const mapStateToProps = (state: RootState): StateProps => {
   return {
-    deletingComment: state.comment.status.deletingComment
+    deletingSubComment: state.subComment.status.deletingSubComment
   };
 };
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { commentId }: OwnProps
+  { subCommentId }: OwnProps
 ): DispatchProps => {
   return {
-    deleteComment: () => dispatch(deleteComment(commentId))
+    deleteSubComment: () => dispatch(deleteSubComment(subCommentId))
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CommentMenu);
+)(SubCommentMenu);

@@ -31,7 +31,7 @@ type SubCommentState = Readonly<{
     addingSubComment: boolean;
     updatingSubComment: boolean;
   };
-  countByPostId: { [postId: string]: number };
+  countByCommentId: { [postId: string]: number };
 }>;
 
 const initState: SubCommentState = {
@@ -44,7 +44,7 @@ const initState: SubCommentState = {
     addingSubComment: false,
     updatingSubComment: false
   },
-  countByPostId: {}
+  countByCommentId: {}
 };
 
 export default combineReducers<SubCommentState, SubCommentAction>({
@@ -99,7 +99,7 @@ export default combineReducers<SubCommentState, SubCommentAction>({
         return state;
     }
   },
-  countByPostId: (state = initState.countByPostId, action) => {
+  countByCommentId: (state = initState.countByCommentId, action) => {
     switch (action.type) {
       case SET_SUBCOMMENTS_COUNT:
         const newState = deepCopy(state);

@@ -1,10 +1,12 @@
+import { Gender } from "../models";
+
 export type BirthDate = { day: number; month: number; year: number };
 
 interface UserData {
   username: string;
   email: string;
   birthDate: BirthDate;
-  gender: string;
+  gender: Gender;
 }
 
 export interface Register extends UserData {

@@ -5,15 +5,15 @@ import { Card, Form, Image, Icon } from "semantic-ui-react";
 
 import Avatar from "../../../../other/Avatar";
 import { RootState } from "MyTypes";
-import { postActions } from "../../../../../store/post";
+import { updatePost } from "../../../../../store/post/actions";
 import { Post, AddPostData } from "../../../../../store/post/models";
 
 type DispatchProps = {
-  updatePost: (id: string, data: AddPostData) => void;
+  updatePost: (data: AddPostData) => void;
 };
 
 type OwnProps = {
-  id: string;
+  postId: string;
   closeWindow: () => void;
 };
 
@@ -44,9 +44,9 @@ class PostUpdate extends React.Component<Props, State> {
   }
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const { updatePost, id } = this.props;
+    const { updatePost } = this.props;
     const { content } = this.state;
-    if (content !== "") updatePost(id, { content });
+    if (content !== "") updatePost({ content });
   };
   render() {
     const { post, updatingPost } = this.props;
@@ -72,6 +72,7 @@ class PostUpdate extends React.Component<Props, State> {
                 onChange={e =>
                   this.setState({ content: e.currentTarget.value })
                 }
+                autoFocus
               />
               {image && <Image src={image} />}
               <Form.Button primary loading={updatingPost}>
@@ -85,17 +86,22 @@ class PostUpdate extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state: RootState, { id }: OwnProps): StateProps => {
+const mapStateToProps = (
+  state: RootState,
+  { postId }: OwnProps
+): StateProps => {
   return {
-    post: state.post.byId[id],
+    post: state.post.byId[postId],
     updatingPost: state.post.status.updatingPost
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  { postId }: OwnProps
+): DispatchProps => {
   return {
-    updatePost: (id: string, data: AddPostData) =>
-      dispatch(postActions.updatePost(id, data))
+    updatePost: (data: AddPostData) => dispatch(updatePost(postId, data))
   };
 };
 

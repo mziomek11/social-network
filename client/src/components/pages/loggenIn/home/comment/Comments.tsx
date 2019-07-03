@@ -22,8 +22,8 @@ type DispatchProps = {
 };
 
 type OwnProps = {
-  id: string;
-  toShow: number;
+  postId: string;
+  commentstoShow: number;
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -33,46 +33,49 @@ class Comments extends React.Component<Props, {}> {
     const {
       allComments,
       commentsById,
-      id,
+      postId,
       commentsCount,
       setCommentCount,
-      toShow
+      commentstoShow
     } = this.props;
 
     const postComments: CommentType[] = allComments
       .map(id => commentsById[id])
-      .filter(comment => comment.post === id);
+      .filter(comment => comment.post === postId);
 
     if (commentsCount !== postComments.length)
       setCommentCount(postComments.length);
 
-    postComments.splice(0, postComments.length - toShow);
+    postComments.splice(0, postComments.length - commentstoShow);
     return (
       <Comment.Group>
         {postComments.map(({ _id }) => (
-          <CommentMain key={_id} id={_id} postId={id} />
+          <CommentMain key={_id} commentId={_id} postId={postId} />
         ))}
       </Comment.Group>
     );
   }
 }
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps): StateProps => {
+const mapStateToProps = (state: RootState, {postId}: OwnProps): StateProps => {
   return {
     commentsById: state.comment.byId,
     allComments: state.comment.allIds,
-    commentsCount: state.comment.countByPostId[ownProps.id]
+    commentsCount: state.comment.countByPostId[postId]
   };
 };
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  ownProps: OwnProps
+  { postId }: OwnProps
 ): DispatchProps => {
   return {
     setCommentCount: (count: number) =>
-      dispatch(commentActions.setCommentCount(ownProps.id, count))
+      dispatch(commentActions.setCommentCount(postId, count))
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Comments);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Comments);
