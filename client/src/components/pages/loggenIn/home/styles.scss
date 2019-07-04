@@ -87,8 +87,13 @@ textarea {
   }
 }
 
+.comment-update-actions {
+  margin-top: 44px;
+}
+
 .comment-update-form {
-  transform: translateY(-14px);
+  transform: translateY(-32px);
+  max-height: 0px;
 
   .comment-update-input input {
     margin-right: 30px !important;

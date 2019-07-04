@@ -5,7 +5,7 @@ import { Card, Image, Icon } from "semantic-ui-react";
 import { isNull } from "util";
 
 import PostMenu from "./PostMenu";
-import CommentSection from "../comment/CommentSection";
+import Comments from "../comment/Comments";
 import Avatar from "../../../../other/Avatar";
 import { RootState } from "MyTypes";
 import { Post as PostType } from "../../../../../store/post/models";
@@ -48,7 +48,7 @@ const Post: React.FC<Props> = ({ postData, postId, user, commentsCount }) => {
         </span>
       </Card.Content>
       <Card.Content>
-        <CommentSection postId={postId} commentCount={commentsCount} />
+        <Comments postId={postId} />
       </Card.Content>
     </Card>
   );

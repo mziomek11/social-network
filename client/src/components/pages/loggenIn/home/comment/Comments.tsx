@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { Comment } from "semantic-ui-react";
 
 import CommentMain from "./CommentMain";
+import ShowMore from "./ShowMore";
+import AddForm from "./CommentAddForm";
 import { RootState } from "MyTypes";
 import { commentActions } from "../../../../../store/comment/";
 import {
@@ -23,41 +25,53 @@ type DispatchProps = {
 
 type OwnProps = {
   postId: string;
-  commentstoShow: number;
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
 
-class Comments extends React.Component<Props, {}> {
-  render() {
-    const {
-      allComments,
-      commentsById,
-      postId,
-      commentsCount,
-      setCommentCount,
-      commentstoShow
-    } = this.props;
+const Comments: React.FC<Props> = ({
+  allComments,
+  commentsById,
+  postId,
+  commentsCount,
+  setCommentCount
+}) => {
+  const commentsPerAdd: number = 2;
+  const [commentsToShow, setCommnetsToShow] = React.useState<number>(2);
+  const postComments: CommentType[] = allComments
+    .map(id => commentsById[id])
+    .filter(comment => comment.post === postId);
 
-    const postComments: CommentType[] = allComments
-      .map(id => commentsById[id])
-      .filter(comment => comment.post === postId);
+  if (commentsCount !== postComments.length)
+    setCommentCount(postComments.length);
 
-    if (commentsCount !== postComments.length)
-      setCommentCount(postComments.length);
-
-    postComments.splice(0, postComments.length - commentstoShow);
-    return (
-      <Comment.Group>
+  postComments.splice(0, postComments.length - commentsToShow);
+  return (
+    <React.Fragment>
+      <ShowMore
+        postId={postId}
+        commentsToShow={commentsToShow}
+        onShowMoreClick={() =>
+          setCommnetsToShow(commentsToShow + commentsPerAdd)
+        }
+      />
+      {postComments.length > 0 && <Comment.Group>
         {postComments.map(({ _id }) => (
           <CommentMain key={_id} commentId={_id} postId={postId} />
         ))}
-      </Comment.Group>
-    );
-  }
-}
+      </Comment.Group>}
+      <AddForm
+        postId={postId}
+        onAddingDone={() => setCommnetsToShow(commentsToShow + 1)}
+      />
+    </React.Fragment>
+  );
+};
 
-const mapStateToProps = (state: RootState, {postId}: OwnProps): StateProps => {
+const mapStateToProps = (
+  state: RootState,
+  { postId }: OwnProps
+): StateProps => {
   return {
     commentsById: state.comment.byId,
     allComments: state.comment.allIds,

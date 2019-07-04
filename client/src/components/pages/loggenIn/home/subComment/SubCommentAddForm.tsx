@@ -1,21 +1,23 @@
 import React from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { Form, Comment } from "semantic-ui-react";
+import { Comment } from "semantic-ui-react";
 
+import FormInsideComment from "../shared/FormInsideComment";
 import { RootState } from "MyTypes";
+import { getImage } from "../../../../other/Avatar";
 import { closeReplying } from "../../../../../store/comment/actions";
 import { addSubComment } from "../../../../../store/subComment/actions";
 import { User } from "../../../../../store/auth/models";
-import { getImage } from "../../../../other/Avatar";
 
 type OwnProps = {
   commentId: string;
+  onAddingDone: () => void;
 };
 
 type StateProps = {
-  isOpen: boolean;
   user: User | null;
+  addingSubComment: boolean;
 };
 
 type DispatchProps = {
@@ -25,51 +27,37 @@ type DispatchProps = {
 
 type Props = OwnProps & DispatchProps & StateProps;
 
-const SubCommentAddForm: React.FC<Props> = ({
-  addSubComment,
-  isOpen,
-  closeReplying,
-  user
-}) => {
-  const [subComment, setSubComment] = React.useState<string>("");
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (subComment.length === 0) return;
-    addSubComment(subComment);
-    setSubComment("");
-    closeReplying();
+class SubCommentAddForm extends React.Component<Props> {
+  componentWillReceiveProps({ addingSubComment }: Props) {
+    if (this.props.addingSubComment && !addingSubComment) {
+      this.props.onAddingDone();
+      this.props.closeReplying();
+    }
+  }
+  handleSubmit = (content: string) => {
+    if (content.length === 0 || this.props.addingSubComment) return;
+    this.props.addSubComment(content);
   };
-  if (!isOpen || !user) return null;
-  return (
-    <Comment>
-      <Comment.Avatar src={getImage(user.gender)} />
-      <Comment.Content className="subcomments-form-container">
-        <Form onSubmit={handleSubmit} className="subcomments-form">
-          <Form.Input
-            fluid
-            placeholder="Your anwser..."
-            size="small"
-            value={subComment}
-            onChange={e => setSubComment(e.target.value)}
-            className="card-input subcomments-form-input"
-            autoFocus
-          />
-        </Form>
-        <Comment.Actions className="subcomments-form-actions">
-          <Comment.Action>Siema</Comment.Action>
-        </Comment.Actions>
-      </Comment.Content>
-    </Comment>
-  );
-};
+  render() {
+    if (!this.props.user) return null;
+    return (
+      <Comment>
+        <Comment.Avatar src={getImage(this.props.user.gender)} />
+        <FormInsideComment
+          startContent=""
+          onSubmit={(content: string) => this.handleSubmit(content)}
+          onCancel={() => this.props.closeReplying()}
+          proccessing={this.props.addingSubComment}
+        />
+      </Comment>
+    );
+  }
+}
 
-const mapStateToProps = (
-  state: RootState,
-  { commentId }: OwnProps
-): StateProps => {
+const mapStateToProps = (state: RootState): StateProps => {
   return {
-    isOpen: state.comment.replyingOpen.indexOf(commentId) > -1,
-    user: state.auth.user
+    user: state.auth.user,
+    addingSubComment: state.subComment.status.addingSubComment
   };
 };
 

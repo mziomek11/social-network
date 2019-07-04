@@ -1,14 +1,13 @@
 import React from "react";
-import moment from "moment";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import { Comment } from "semantic-ui-react";
 import { isNull } from "util";
 
 import CommentMenu from "./CommentMenu";
 import CommentUpdate from "./CommentUpdate";
-import SubCommentSection from "../subComment/SubCommentSection";
+import SubComments from "../subComment/SubComments";
+import CommentContent from "../shared/CommentContent";
 import { openReplying } from "../../../../../store/comment/actions";
 import { getImage } from "../../../../other/Avatar";
 import { RootState } from "MyTypes";
@@ -44,7 +43,6 @@ const CommentElement: React.FC<Props> = ({
   openReplying
 }) => {
   const [updating, setUpdating] = React.useState<boolean>(false);
-  const { owner, content, date, authorName, authorGender } = comment;
 
   const canDelete: boolean =
     !isNull(user) && (user._id === post.owner || user._id === comment.owner);
@@ -52,7 +50,7 @@ const CommentElement: React.FC<Props> = ({
 
   return (
     <Comment>
-      <Comment.Avatar src={getImage(authorGender)} />
+      <Comment.Avatar src={getImage(comment.authorGender)} />
       {(canDelete || canUpdate) && !updating && (
         <CommentMenu
           canDelete={canDelete}
@@ -61,39 +59,19 @@ const CommentElement: React.FC<Props> = ({
           commentId={commentId}
         />
       )}
-      <Comment.Content>
-        <Comment.Author as={Link} to={`/profile/${owner}`}>
-          {authorName}
-        </Comment.Author>
-        <Comment.Metadata>
-          <div>{moment(date).fromNow()}</div>
-        </Comment.Metadata>
-        {updating ? (
-          <CommentUpdate
-            commentId={commentId}
-            startContent={content}
-            onUpdateDone={() => setUpdating(false)}
-          />
-        ) : (
-          <Comment.Text>{content}</Comment.Text>
-        )}
-
-        <Comment.Actions>
-          {updating ? (
-            <Comment.Action onClick={() => setUpdating(false)}>
-              Cancel
-            </Comment.Action>
-          ) : (
-            <Comment.Action onClick={() => openReplying()}>
-              Reply
-            </Comment.Action>
-          )}
-        </Comment.Actions>
-      </Comment.Content>
-      <SubCommentSection
+      {updating ? (
+        <CommentUpdate
+          commentId={commentId}
+          startContent={comment.content}
+          onUpdateDone={() => setUpdating(false)}
+          onCancelClick={() => setUpdating(false)}
+        />
+      ) : (
+        <CommentContent opinionData={comment} onReply={() => openReplying()} />
+      )}
+      <SubComments
         postId={postId}
         commentId={commentId}
-        subCommentsCount={subCommentsCount}
       />
     </Comment>
   );

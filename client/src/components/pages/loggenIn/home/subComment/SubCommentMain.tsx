@@ -1,13 +1,12 @@
 import React from "react";
-import moment from "moment";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import { Comment } from "semantic-ui-react";
 import { isNull } from "util";
 
 import SubCommentMenu from "./SubCommentMenu";
 import SubCommentUpdate from "./SubCommentUpdate";
+import CommentContent from "../shared/CommentContent";
 import { openReplying } from "../../../../../store/comment/actions";
 import { getImage } from "../../../../other/Avatar";
 import { RootState } from "MyTypes";
@@ -18,7 +17,6 @@ import { Post } from "../../../../../store/post/models";
 type DispatchProps = {
   openReplying: () => void;
 };
-
 
 type OwnProps = {
   subCommentId: string;
@@ -42,7 +40,6 @@ const SubCommentElement: React.FC<Props> = ({
   openReplying
 }) => {
   const [updating, setUpdating] = React.useState<boolean>(false);
-  const { owner, content, date, authorName, authorGender } = subComment;
 
   const canDelete: boolean =
     !isNull(user) && (user._id === post.owner || user._id === subComment.owner);
@@ -50,7 +47,7 @@ const SubCommentElement: React.FC<Props> = ({
 
   return (
     <Comment>
-      <Comment.Avatar src={getImage(authorGender)} />
+      <Comment.Avatar src={getImage(subComment.authorGender)} />
       {(canDelete || canUpdate) && !updating && (
         <SubCommentMenu
           canDelete={canDelete}
@@ -59,33 +56,19 @@ const SubCommentElement: React.FC<Props> = ({
           subCommentId={subCommentId}
         />
       )}
-      <Comment.Content>
-        <Comment.Author as={Link} to={`/profile/${owner}`}>
-          {authorName}
-        </Comment.Author>
-        <Comment.Metadata>
-          <div>{moment(date).fromNow()}</div>
-        </Comment.Metadata>
-        {updating ? (
-          <SubCommentUpdate
-            subCommentId={subCommentId}
-            startContent={content}
-            onUpdateDone={() => setUpdating(false)}
-          />
-        ) : (
-          <Comment.Text>{content}</Comment.Text>
-        )}
-
-        <Comment.Actions>
-          {updating ? (
-            <Comment.Action onClick={() => setUpdating(false)}>
-              Cancel
-            </Comment.Action>
-          ) : (
-            <Comment.Action onClick={() => openReplying()}>Reply</Comment.Action>
-          )}
-        </Comment.Actions>
-      </Comment.Content>
+      {updating ? (
+        <SubCommentUpdate
+          subCommentId={subCommentId}
+          startContent={subComment.content}
+          onUpdateDone={() => setUpdating(false)}
+          onCancelClick={() => setUpdating(false)}
+        />
+      ) : (
+        <CommentContent
+          opinionData={subComment}
+          onReply={() => openReplying()}
+        />
+      )}
     </Comment>
   );
 };
@@ -110,4 +93,7 @@ const mapDispatchToProps = (
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SubCommentElement);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SubCommentElement);
