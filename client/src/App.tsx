@@ -27,7 +27,6 @@ type Props = StateProps & DispatchProps;
 
 class App extends React.Component<Props, {}> {
   componentDidMount() {
-    console.log("NAPRAWIC FORMY W KOMETACH BO TO JEST DRAMAT")
     this.props.loadUser();
   }
   render() {

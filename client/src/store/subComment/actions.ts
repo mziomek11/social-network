@@ -1,6 +1,6 @@
 import { action } from "typesafe-actions";
 
-import {deepCopy} from "../../utils";
+import { deepCopy } from "../../utils";
 import {
   FETCH_SUBCOMMENTS,
   FETCH_SUBCOMMENTS_SUCCESS,
@@ -35,7 +35,8 @@ export const fetchSubCommentsSuccess = (
   return action(FETCH_SUBCOMMENTS_SUCCESS, payload);
 };
 
-export const addSubComment = (data: AddSubCommentData) => action(ADD_SUBCOMMENT, data);
+export const addSubComment = (data: AddSubCommentData) =>
+  action(ADD_SUBCOMMENT, data);
 export const addSubCommentFailed = () => action(ADD_SUBCOMMENT_FAILED);
 export const addSubCommentSuccess = (
   oldSubComments: SubCommentsById,
@@ -55,14 +56,20 @@ export const updateSubCommentSuccess = (
   updatedSubComment: SubComment
 ) => {
   const newSubComments: SubCommentsById = deepCopy(oldSubComments);
-  newSubComments[updatedSubComment._id] = updatedSubComment;
+  newSubComments[updatedSubComment._id] = {
+    ...newSubComments[updatedSubComment._id],
+    ...updatedSubComment
+  };
   const payload = { newById: newSubComments };
   return action(UPDATE_SUBCOMMENT_SUCCESS, payload);
 };
 
 export const deleteSubComment = (id: string) => action(DELETE_SUBCOMMENT, id);
 export const deleteSubCommentFailed = () => action(DELETE_SUBCOMMENT_FAILED);
-export const deleteSubCommentSuccess = (oldSubComments: SubCommentsById, id: string) => {
+export const deleteSubCommentSuccess = (
+  oldSubComments: SubCommentsById,
+  id: string
+) => {
   const newSubComments: SubCommentsById = deepCopy(oldSubComments);
   delete newSubComments[id];
   const payload = { newById: newSubComments, id };
@@ -71,4 +78,3 @@ export const deleteSubCommentSuccess = (oldSubComments: SubCommentsById, id: str
 
 export const setSubCommentCount = (id: string, count: number) =>
   action(SET_SUBCOMMENTS_COUNT, { id, count });
-

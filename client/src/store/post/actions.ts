@@ -45,7 +45,7 @@ export const updatePost = (id: string, data: UpdateOpinionData) =>
 export const updatePostFailed = () => action(UPDATE_POST_FAILED);
 export const updatePostSuccess = (oldPosts: PostsById, updatedPost: Post) => {
   const newPosts: PostsById = deepCopy(oldPosts);
-  newPosts[updatedPost._id] = updatedPost;
+  newPosts[updatedPost._id] = { ...newPosts[updatedPost._id], ...updatedPost };
   const payload = { newById: newPosts };
   return action(UPDATE_POST_SUCCESS, payload);
 };

@@ -4,37 +4,50 @@ const router = express.Router();
 
 // Impoering model
 const Comment = require("../../models/Comment");
+const SubComment = require("../../models/SubComment");
+
+//Utils
+const {
+  getDocsOwnersData,
+  getDocsWithAuthorData,
+  createNewDoc,
+  getDocWithAuthorData,
+  updateDoc,
+  deleteDoc
+} = require("./utils");
 
 // @GET     api/comments/
 // @desc    Get All Comments
 // @access  Private
-router.get("/", auth, (req, res) => {
-  Comment.find()
-    .sort({ date: 1 })
-    .then(comments => res.json(comments));
+router.get("/", auth, async (req, res) => {
+  const comments = await Comment.find().sort({ date: 1 });
+  const ownersData = await getDocsOwnersData(comments);
+  const commentsWithAuthorData = getDocsWithAuthorData(comments, ownersData, [
+    "post"
+  ]);
+
+  res.json(commentsWithAuthorData);
 });
 
-// @POST    api/comments/:postid
+// @POST    api/comments/:post
 // @desc    Create A Comment
 // @access  Private
-router.post("/:postid", auth, async (req, res) => {
+router.post("/:post", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    const commentData = {
-      content: req.body.content,
-      post: req.params.postid,
-      owner: req.user.id,
-      authorName: user.username,
-      authorGender: user.gender
-    };
-    if (req.body.image) commentData.image = image;
+    const post = await Post.findById(req.params.post);
+    if (!post) res.status(404).json({ msg: "Not found" });
 
-    const newComment = new Comment(commentData);
-    const savedComment = await newComment.save();
+    const newComment = await createNewDoc(req, Comment, [
+      { key: "post", value: post.id }
+    ]);
 
-    res.json(savedComment);
+    const commentWithAuthorData = getDocWithAuthorData(newComment, user, [
+      "post"
+    ]);
+
+    res.json(commentWithAuthorData);
   } catch (e) {
-    console.log(e);
     res.status(400).json({ msg: "Send correct data" });
   }
 });
@@ -43,45 +56,14 @@ router.post("/:postid", auth, async (req, res) => {
 // @desc    Update A Comment
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
-  if (!req.body.content && !req.body.image)
-    res.status(400).json({ msg: "Send correct data" });
-  try {
-    const comment = await Comment.findById(req.params.id);
-    if (!comment) res.status(404).json({ msg: "Comment does not exists" });
-    const post = await Post.findById(comment.post);
-
-    if (comment.owner !== req.user.id && post.owner !== req.user.id)
-      res.status(403).json({ msg: "Access denied" });
-
-    const updateData = { $set: { content: req.body.content } };
-    if (req.body.image) updateData["$set"].image = req.body.image;
-
-    await Comment.findByIdAndUpdate(req.params.id, updateData);
-    const updatedComment = await Comment.findById(req.params.id);
-
-    res.json(updatedComment);
-  } catch (err) {
-    console.log(err);
-  }
+  await updateDoc(req, res, Comment);
 });
 
 // @DELETE  api/commets/:id
 // @desc    Delete A Comment
 // @access  Private
 router.delete("/:id", auth, async (req, res) => {
-  try {
-    const comment = await Comment.findById(req.params.id);
-    if (!comment) res.status(404).json({ msg: "Comment does not exists" });
-    const post = await Post.findById(comment.post);
-
-    if (comment.owner !== req.user.id && post.owner !== req.user.id)
-      res.status(403).json({ msg: "Access denied" });
-
-    await Comment.findByIdAndDelete(req.params.id);
-    res.json({ success: true });
-  } catch (err) {
-    console.log(err);
-  }
+  await deleteDoc(req, res, Comment, [SubComment], "comment", true);
 });
 
 module.exports = router;

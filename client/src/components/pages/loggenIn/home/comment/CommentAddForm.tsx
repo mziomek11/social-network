@@ -62,10 +62,7 @@ class CommentAddForm extends React.Component<Props, State> {
     ) : (
       <span
         className="comments-clickable"
-        onClick={() => {
-          console.log("siema");
-          this.setState({ isTyping: true });
-        }}
+        onClick={() => this.setState({ isTyping: true })}
       >
         Write comment...
       </span>

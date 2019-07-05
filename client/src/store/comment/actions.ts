@@ -57,7 +57,7 @@ export const updateCommentSuccess = (
   updatedComment: Comment
 ) => {
   const newComments: CommentsById = deepCopy(oldComments);
-  newComments[updatedComment._id] = updatedComment;
+  newComments[updatedComment._id] = {...newComments[updatedComment._id], ...updatedComment};
   const payload = { newById: newComments };
   return action(UPDATE_COMMENT_SUCCESS, payload);
 };

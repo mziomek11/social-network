@@ -4,15 +4,29 @@ const router = express.Router();
 
 // Impoering model
 const Post = require("../../models/Post");
+const Comment = require("../../models/Comment");
+const SubComment = require("../../models/SubComment");
 const User = require("../../models/User");
+
+//Utils
+const {
+  getDocsOwnersData,
+  getDocsWithAuthorData,
+  createNewDoc,
+  getDocWithAuthorData,
+  updateDoc,
+  deleteDoc
+} = require("./utils");
 
 // @GET     api/posts
 // @desc    Get All Posts
 // @access  Private
-router.get("", auth, (req, res) => {
-  Post.find()
-    .sort({ date: -1 })
-    .then(posts => res.json(posts));
+router.get("", auth, async (req, res) => {
+  const posts = await Post.find().sort({ date: -1 });
+  const ownersData = await getDocsOwnersData(posts);
+  const postsWithAuthorData = getDocsWithAuthorData(posts, ownersData);
+
+  res.json(postsWithAuthorData);
 });
 
 // @POST    api/posts
@@ -21,70 +35,27 @@ router.get("", auth, (req, res) => {
 router.post("", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    const postData = {
-      content: req.body.content,
-      owner: req.user.id,
-      authorName: user.username,
-      authorGender: user.gender
-    };
-    if (req.body.image) postData.image = image;
+    const newPost = await createNewDoc(req, Post);
+    const postWithAuthorData = getDocWithAuthorData(newPost, user);
 
-    const newPost = new Post(postData);
-    const savedPost = await newPost.save();
-    res.json(savedPost);
+    res.json(postWithAuthorData);
   } catch (e) {
-    console.log(e);
     res.status(400).json({ msg: "Send correct data" });
   }
-});
-
-// @GET     api/posts/:id
-// @desc    Get One Post
-// @access  Private
-router.get("/:id", auth, (req, res) => {
-  Post.findById(req.params.id)
-    .then(post => res.json(post))
-    .catch(() => res.status(404).json({ msg: "Post does not exists" }));
 });
 
 // @UPDATE  api/posts/:id
 // @desc    Update A Post
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
-  if (!req.body.content && !req.body.image)
-    res.status(400).json({ msg: "Send correct data" });
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) res.status(404).json({ msg: "Post does not exists" });
-    if (post.owner !== req.user.id)
-      res.status(403).json({ msg: "Access denied" });
-
-    const updateData = { $set: { content: req.body.content } };
-    if (req.body.image) updateData["$set"].image = req.body.image;
-    await Post.findByIdAndUpdate(req.params.id, updateData);
-    const updatedPost = await Post.findById(req.params.id);
-
-    res.json(updatedPost);
-  } catch (err) {
-    console.log(err);
-  }
+  await updateDoc(req, res, Post);
 });
 
 // @DELETE  api/posts/:id
 // @desc    Delete A Post
 // @access  Private
 router.delete("/:id", auth, async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) res.status(404).json({ msg: "Post does not exists" });
-    if (post.owner !== req.user.id)
-      res.status(403).json({ msg: "Access denied" });
-
-    await Post.findByIdAndDelete(req.params.id);
-    res.json({ success: true });
-  } catch (err) {
-    console.log(err);
-  }
+  await deleteDoc(req, res, Post, [Comment, SubComment], "post");
 });
 
 module.exports = router;
