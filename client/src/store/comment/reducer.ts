@@ -66,7 +66,7 @@ export default combineReducers<CommentState, CommentAction>({
   allIds: (state = initState.allIds, action) => {
     switch (action.type) {
       case FETCH_COMMENTS_SUCCESS:
-        const idsWithDupli = [...state, ...action.payload.ids];
+        const idsWithDupli = [...action.payload.ids, ...state];
         return idsWithDupli.filter((id, i) => idsWithDupli.indexOf(id) === i);
       case DELETE_COMMENT_SUCCESS:
         return [...state].filter(id => id !== action.payload.id);

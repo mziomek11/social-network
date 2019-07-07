@@ -16,11 +16,13 @@ import {
 type StateProps = {
   allComments: string[];
   commentsById: CommentsById;
-  commentsCount: number;
+  postCommentsCount: number;
+  fetchedCommentsCount: number;
 };
 
 type DispatchProps = {
   setCommentCount: (count: number) => void;
+  fetchComments: (fetchedCommentsCount: number) => void;
 };
 
 type OwnProps = {
@@ -33,37 +35,34 @@ const Comments: React.FC<Props> = ({
   allComments,
   commentsById,
   postId,
-  commentsCount,
-  setCommentCount
+  fetchedCommentsCount,
+  setCommentCount,
+  postCommentsCount,
+  fetchComments
 }) => {
-  const commentsPerAdd: number = 2;
-  const [commentsToShow, setCommnetsToShow] = React.useState<number>(2);
   const postComments: CommentType[] = allComments
     .map(id => commentsById[id])
     .filter(comment => comment.post === postId);
 
-  if (commentsCount !== postComments.length)
+  if (fetchedCommentsCount !== postComments.length)
     setCommentCount(postComments.length);
 
-  postComments.splice(0, postComments.length - commentsToShow);
   return (
     <React.Fragment>
-      <ShowMoreComments
-        postId={postId}
-        commentsToShow={commentsToShow}
-        onShowMoreClick={() =>
-          setCommnetsToShow(commentsToShow + commentsPerAdd)
-        }
-      />
-      {postComments.length > 0 && <Comment.Group>
-        {postComments.map(({ _id }) => (
-          <CommentMain key={_id} commentId={_id} postId={postId} />
-        ))}
-      </Comment.Group>}
-      <CommentAddForm
-        postId={postId}
-        onAddingDone={() => setCommnetsToShow(commentsToShow + 1)}
-      />
+      {postCommentsCount > fetchedCommentsCount && (
+        <ShowMoreComments
+          onShowMoreClick={() => fetchComments(fetchedCommentsCount)}
+        />
+      )}
+
+      {postComments.length > 0 && (
+        <Comment.Group>
+          {postComments.map(({ _id }) => (
+            <CommentMain key={_id} commentId={_id} postId={postId} />
+          ))}
+        </Comment.Group>
+      )}
+      <CommentAddForm postId={postId} />
     </React.Fragment>
   );
 };
@@ -75,7 +74,8 @@ const mapStateToProps = (
   return {
     commentsById: state.comment.byId,
     allComments: state.comment.allIds,
-    commentsCount: state.comment.countByPostId[postId]
+    fetchedCommentsCount: state.comment.countByPostId[postId],
+    postCommentsCount: state.post.byId[postId].commentsCount
   };
 };
 
@@ -85,7 +85,9 @@ const mapDispatchToProps = (
 ): DispatchProps => {
   return {
     setCommentCount: (count: number) =>
-      dispatch(commentActions.setCommentCount(postId, count))
+      dispatch(commentActions.setCommentCount(postId, count)),
+    fetchComments: (fetchedCommentsCount: number) =>
+      dispatch(commentActions.fetchComments(postId, fetchedCommentsCount))
   };
 };
 

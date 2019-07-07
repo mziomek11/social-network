@@ -24,9 +24,14 @@ export const fetchComments: Epic<RootAction, RootAction, RootState> = (
 ) =>
   action$.pipe(
     filter(isOfType(commentConstants.FETCH_COMMENTS)),
-    switchMap(() =>
+    switchMap(({ payload }) =>
       ajax
-        .get(`${apiPath}comments/`, tokenHeaders(state$.value))
+        .get(
+          `${apiPath}comments?post=${payload.postId}&count=${
+            payload.commentsCount
+          }`,
+          tokenHeaders(state$.value)
+        )
         .pipe(
           map(({ response }) =>
             fetchCommentsSuccess(state$.value.comment.byId, response)

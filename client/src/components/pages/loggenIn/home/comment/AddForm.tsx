@@ -8,7 +8,6 @@ import { addComment } from "../../../../../store/comment/actions";
 
 type OwnProps = {
   postId: string;
-  onAddingDone: () => void;
 };
 
 type StateProps = {
@@ -34,7 +33,6 @@ class CommentAddForm extends React.Component<Props, State> {
   componentWillReceiveProps({ addingComment }: Props) {
     if (this.props.addingComment && !addingComment) {
       this.setState({ comment: "", isTyping: false });
-      this.props.onAddingDone();
     }
   }
   handleSubmit = (e: React.FormEvent) => {
@@ -69,38 +67,6 @@ class CommentAddForm extends React.Component<Props, State> {
     );
   }
 }
-
-// const CommentAddForm: React.FC<Props> = ({ addComment, addingComment }) => {
-//   React.useEffect(() => {
-//     console.log(addingComment)
-//   }, [addingComment])
-//   const [comment, setComment] = React.useState<string>("");
-//   const [isTyping, setIsTyping] = React.useState<boolean>(false);
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-//     if (comment.length === 0 && !addingComment) return;
-//     addComment(comment);
-//     setComment("");
-//     setIsTyping(false);
-//   };
-//   return isTyping ? (
-//     <Form onSubmit={handleSubmit}>
-//       <Form.Input
-//         fluid
-//         placeholder="Your comment..."
-//         size="small"
-//         value={comment}
-//         onChange={e => setComment(e.target.value)}
-//         className="card-input"
-//         autoFocus
-//       />
-//     </Form>
-//   ) : (
-//     <span className="comments-clickable" onClick={() => setIsTyping(true)}>
-//       Write comment...
-//     </span>
-//   );
-// };
 
 const mapStateToProps = (state: RootState): StateProps => {
   return {

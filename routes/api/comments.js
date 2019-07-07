@@ -20,8 +20,15 @@ const {
 // @desc    Get All Comments
 // @access  Private
 router.get("/", auth, async (req, res) => {
-  console.log("getting comments ")
-  const comments = await Comment.find().sort({ date: 1 });
+  const { count, post } = req.query;
+
+  const commentsToSkip = parseInt(count);
+  const comments = await Comment.find({ post })
+    .skip(commentsToSkip)
+    .limit(2)
+    .sort({ date: -1 });
+
+  comments.reverse();
   const ownersData = await getDocsOwnersData(comments);
   const commentsWithAuthorData = getDocsWithAuthorData(comments, ownersData, [
     "post"
@@ -38,6 +45,14 @@ router.post("/:post", auth, async (req, res) => {
     const user = await User.findById(req.user.id);
     const post = await Post.findById(req.params.post);
     if (!post) res.status(404).json({ msg: "Not found" });
+    await Post.findOneAndUpdate(
+      { _id: req.params.post },
+      {
+        $inc: {
+          commentsCount: 1
+        }
+      }
+    );
 
     const newComment = await createNewDoc(req, Comment, [
       { key: "post", value: post.id }
@@ -64,7 +79,17 @@ router.put("/:id", auth, async (req, res) => {
 // @desc    Delete A Comment
 // @access  Private
 router.delete("/:id", auth, async (req, res) => {
-  await deleteDoc(req, res, Comment, [SubComment], "comment", true);
+  const comment = await Comment.findById(req.params.id);
+  await deleteDoc(req, res, comment, Comment, [SubComment], "comment", true);
+  await Post.findOneAndUpdate(
+    { _id: comment.post },
+    {
+      $inc: {
+        commentsCount: -1
+      }
+    }
+  );
+  res.json({ succes: true });
 });
 
 module.exports = router;

@@ -68,7 +68,9 @@ router.put("/:id", auth, async (req, res) => {
 // @desc    Delete A SubComment
 // @access  Private
 router.delete("/:id", auth, async (req, res) => {
-  await deleteDoc(req, res, SubComment, [], "", true);
+  const subComment = await SubComment.findById(req.params.id);
+  await deleteDoc(req, res, subComment, SubComment, [], "", true);
+  res.json({succes: true});
 });
 
 module.exports = router;

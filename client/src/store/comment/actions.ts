@@ -21,7 +21,8 @@ import {
 import { CommentsById, Comment, AddCommentData } from "./models";
 import { UpdateOpinionData } from "../models";
 
-export const fetchComments = () => action(FETCH_COMMENTS);
+export const fetchComments = (postId: string, commentsCount: number) =>
+  action(FETCH_COMMENTS, { postId, commentsCount });
 export const fetchCommentsFailed = () => action(FETCH_COMMENTS_FAILED);
 export const fetchCommentsSuccess = (
   oldComments: CommentsById,
@@ -57,7 +58,10 @@ export const updateCommentSuccess = (
   updatedComment: Comment
 ) => {
   const newComments: CommentsById = deepCopy(oldComments);
-  newComments[updatedComment._id] = {...newComments[updatedComment._id], ...updatedComment};
+  newComments[updatedComment._id] = {
+    ...newComments[updatedComment._id],
+    ...updatedComment
+  };
   const payload = { newById: newComments };
   return action(UPDATE_COMMENT_SUCCESS, payload);
 };

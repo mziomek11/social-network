@@ -5,8 +5,6 @@ import { connect } from "react-redux";
 import { RootState } from "MyTypes";
 import Post from ".";
 import { fetchPosts } from "../../../../../store/post/actions";
-import { fetchComments } from "../../../../../store/comment/actions";
-import { fetchSubComments } from "../../../../../store/subComment/actions";
 
 type StoreProps = {
   postsIds: string[];
@@ -15,8 +13,6 @@ type StoreProps = {
 
 type DispatchProps = {
   fetchPosts: () => void;
-  fetchComments: () => void;
-  fetchSubComments: () => void;
 };
 
 type Props = StoreProps & DispatchProps;
@@ -66,9 +62,7 @@ const mapStateToProps = (state: RootState): StoreProps => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    fetchPosts: () => dispatch(fetchPosts()),
-    fetchComments: () => dispatch(fetchComments()),
-    fetchSubComments: () => dispatch(fetchSubComments())
+    fetchPosts: () => dispatch(fetchPosts())
   };
 };
 

@@ -82,13 +82,13 @@ module.exports.updateDoc = async (req, res, model) => {
 module.exports.deleteDoc = async (
   req,
   res,
+  doc,
   model,
   modelsToFullyDelete,
   fieldToDeleteBy,
   checkIsPostOwner
 ) => {
   try {
-    const doc = await model.findById(req.params.id);
     if (!doc) res.status(404).json({ msg: "Not found" });
 
     let hasAccess = false;
@@ -110,8 +110,6 @@ module.exports.deleteDoc = async (
       deleteConditions[fieldToDeleteBy] = req.params.id;
       await modelToDelete.deleteMany(deleteConditions);
     });
-
-    res.json({ success: true });
   } catch (err) {
     console.log(err);
   }

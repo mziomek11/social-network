@@ -35,11 +35,16 @@ router.get("", auth, async (req, res) => {
     .skip(count)
     .sort({ date: -1 });
   const ownersData = await getDocsOwnersData(posts);
-  const postsWithAuthorData = getDocsWithAuthorData(posts, ownersData);
+  const postsWithAuthorData = getDocsWithAuthorData(posts, ownersData, [
+    "commentsCount"
+  ]);
 
   let comments = [];
   for (let i = 0; i < posts.length; i++) {
-    const postComments = await Comment.find({ post: posts[i].id }).limit(2);
+    const commentsToSkip = Math.max(posts[i].commentsCount - 2, 0);
+    const postComments = await Comment.find({ post: posts[i].id })
+      .limit(2)
+      .skip(commentsToSkip);
     comments = [...comments, ...postComments];
   }
 
@@ -79,7 +84,9 @@ router.put("/:id", auth, async (req, res) => {
 // @desc    Delete A Post
 // @access  Private
 router.delete("/:id", auth, async (req, res) => {
-  await deleteDoc(req, res, Post, [Comment, SubComment], "post");
+  const post = await Post.findById(req.params.id);
+  await deleteDoc(req, res, post, Post, [Comment, SubComment], "post");
+  res.json({ succes: true });
 });
 
 module.exports = router;

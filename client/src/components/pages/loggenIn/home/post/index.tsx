@@ -1,6 +1,5 @@
 import React from "react";
 import moment from "moment";
-import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { Card, Image, Icon } from "semantic-ui-react";
 import { isNull } from "util";
@@ -9,7 +8,6 @@ import PostMenu from "./Menu";
 import CommentList from "../comment/List";
 import Avatar from "../../../../other/Avatar";
 import { RootState } from "MyTypes";
-import { fetchComments } from "../../../../../store/comment/actions";
 import { Post as PostType } from "../../../../../store/post/models";
 import { User } from "../../../../../store/auth/models";
 
@@ -20,32 +18,29 @@ type OwnProps = {
 type StateProps = {
   postData: PostType;
   user: User | null;
-  commentsCount: number;
 };
 
-type DispatchProps = {
-  fetchComments: () => void;
-}
-
-type Props = OwnProps & StateProps & DispatchProps;
+type Props = OwnProps & StateProps;
 
 class Post extends React.Component<Props, {}> {
   shouldComponentUpdate(nextProps: Props) {
-    const { postData, postId, commentsCount } = this.props;
+    const { postData, postId } = this.props;
+    const { commentsCount, content } = postData;
     if (postId !== nextProps.postId) return true;
-    if (commentsCount !== nextProps.commentsCount) return true;
-    if (postData.content !== nextProps.postData.content) return true;
+    if (commentsCount !== nextProps.postData.commentsCount) return true;
+    if (content !== nextProps.postData.content) return true;
     return false;
   }
   render() {
-    const { postData, postId, user, commentsCount } = this.props;
+    const { postData, postId, user } = this.props;
     const {
       authorName,
       date,
       content,
       image,
       likedBy,
-      authorGender
+      authorGender,
+      commentsCount
     } = postData;
     const isPostOwner: boolean = !isNull(user) && user._id === postData.owner;
     return (
@@ -65,8 +60,7 @@ class Post extends React.Component<Props, {}> {
           </span>
           <Icon name="comment" />
           <span>
-            {commentsCount ? commentsCount : 0}{" "}
-            {`comment${commentsCount !== 1 ? "s" : ""}`}
+            {`${commentsCount} comment${commentsCount !== 1 ? "s" : ""}`}
           </span>
         </Card.Content>
         <Card.Content className="comments">
@@ -83,17 +77,8 @@ const mapStateToProps = (
 ): StateProps => {
   return {
     postData: state.post.byId[postId],
-    user: state.auth.user,
-    commentsCount: state.comment.countByPostId[postId]
-      ? state.comment.countByPostId[postId]
-      : 0
+    user: state.auth.user
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    fetchComments: () => dispatch(fetchComments())
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Post);
+export default connect(mapStateToProps)(Post);

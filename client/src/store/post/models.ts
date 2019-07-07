@@ -2,6 +2,7 @@ import { Opinion, AddOpinionData } from "../models";
 
 export interface Post extends Opinion {
   image: string | null;
+  commentsCount: number;
 }
 
 export type PostsById = {

@@ -28,7 +28,7 @@ export const fetchPosts: Epic<RootAction, RootAction, RootState> = (
     switchMap(() =>
       ajax
         .get(
-          apiPath + `posts?count=${state$.value.post.allIds.length}`,
+          apiPath + `posts?count=${state$.value.post.allIds.length}/`,
           tokenHeaders(state$.value)
         )
         .pipe(
