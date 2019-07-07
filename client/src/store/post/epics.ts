@@ -6,6 +6,7 @@ import { ajax } from "rxjs/ajax";
 import { of } from "rxjs";
 
 import { postConstants, postActions } from "../post";
+import { commentActions } from "../comment";
 import { apiPath, tokenHeaders } from "../../api";
 const {
   fetchPostsSuccess,
@@ -25,9 +26,35 @@ export const fetchPosts: Epic<RootAction, RootAction, RootState> = (
   action$.pipe(
     filter(isOfType(postConstants.FETCH_POSTS)),
     switchMap(() =>
-      ajax.get(apiPath + "posts/", tokenHeaders(state$.value)).pipe(
-        map(({ response }) => fetchPostsSuccess(response)),
-        catchError(() => of(fetchPostsFailed()))
+      ajax
+        .get(
+          apiPath + `posts?count=${state$.value.post.allIds.length}`,
+          tokenHeaders(state$.value)
+        )
+        .pipe(
+          map(({ response }) =>
+            fetchPostsSuccess(
+              state$.value.post.byId,
+              state$.value.post.allIds,
+              response.posts,
+              response.comments
+            )
+          ),
+          catchError(() => of(fetchPostsFailed()))
+        )
+    )
+  );
+
+export const addFetchedComments: Epic<RootAction, RootAction, RootState> = (
+  action$,
+  state$
+) =>
+  action$.pipe(
+    filter(isOfType(postConstants.FETCH_POSTS_SUCCESS)),
+    map(({ payload }) =>
+      commentActions.fetchCommentsSuccess(
+        state$.value.comment.byId,
+        payload.fetchedComments
       )
     )
   );
@@ -62,7 +89,7 @@ export const deletePost: Epic<RootAction, RootAction, RootState> = (
     )
   );
 
-export const update: Epic<RootAction, RootAction, RootState> = (
+export const updatePost: Epic<RootAction, RootAction, RootState> = (
   action$,
   state$
 ) =>

@@ -20,6 +20,7 @@ const {
 // @desc    Get All Comments
 // @access  Private
 router.get("/", auth, async (req, res) => {
+  console.log("getting comments ")
   const comments = await Comment.find().sort({ date: 1 });
   const ownersData = await getDocsOwnersData(comments);
   const commentsWithAuthorData = getDocsWithAuthorData(comments, ownersData, [

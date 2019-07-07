@@ -22,11 +22,35 @@ const {
 // @desc    Get All Posts
 // @access  Private
 router.get("", auth, async (req, res) => {
-  const posts = await Post.find().sort({ date: -1 });
+  let count = req.query.count;
+  try {
+    count = parseInt(count);
+  } catch (err) {
+    return res.json({ error: true });
+  }
+
+  console.time("fetchign psots");
+  const posts = await Post.find()
+    .limit(4)
+    .skip(count)
+    .sort({ date: -1 });
   const ownersData = await getDocsOwnersData(posts);
   const postsWithAuthorData = getDocsWithAuthorData(posts, ownersData);
 
-  res.json(postsWithAuthorData);
+  let comments = [];
+  for (let i = 0; i < posts.length; i++) {
+    const postComments = await Comment.find({ post: posts[i].id }).limit(2);
+    comments = [...comments, ...postComments];
+  }
+
+  const commentsOwnersData = await getDocsOwnersData(comments);
+  const commentsWithAuthorData = await getDocsWithAuthorData(
+    comments,
+    commentsOwnersData,
+    ["post"]
+  );
+
+  res.json({ posts: postsWithAuthorData, comments: commentsWithAuthorData });
 });
 
 // @POST    api/posts

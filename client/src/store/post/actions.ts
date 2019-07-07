@@ -16,18 +16,28 @@ import {
   DELETE_POST_FAILED
 } from "./constants";
 import { PostsById, Post, AddPostData } from "./models";
+import { Comment } from "../comment/models";
 import { UpdateOpinionData } from "../models";
 
 export const fetchPosts = () => action(FETCH_POSTS);
 export const fetchPostsFailed = () => action(FETCH_POSTS_FAILED);
-export const fetchPostsSuccess = (fetchedPosts: Post[]) => {
-  const newPosts: PostsById = {};
-  const ids: string[] = [];
+export const fetchPostsSuccess = (
+  oldPosts: PostsById,
+  oldIds: string[],
+  fetchedPosts: Post[],
+  fetchedComments: Comment[]
+) => {
+  const newPosts: PostsById = deepCopy(oldPosts);
+  const newIds: string[] = [...oldIds];
   fetchedPosts.forEach(({ _id, ...rest }) => {
     newPosts[_id] = { _id, ...rest };
-    ids.push(_id);
+    if (newIds.indexOf(_id) === -1) newIds.push(_id);
   });
-  const payload = { newById: newPosts, ids };
+  const payload = {
+    newById: newPosts,
+    ids: newIds,
+    fetchedComments: fetchedComments
+  };
   return action(FETCH_POSTS_SUCCESS, payload);
 };
 

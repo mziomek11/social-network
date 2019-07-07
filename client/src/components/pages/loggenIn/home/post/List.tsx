@@ -10,6 +10,7 @@ import { fetchSubComments } from "../../../../../store/subComment/actions";
 
 type StoreProps = {
   postsIds: string[];
+  isFetchingPosts: boolean;
 };
 
 type DispatchProps = {
@@ -23,9 +24,27 @@ type Props = StoreProps & DispatchProps;
 class Posts extends Component<Props, {}> {
   componentDidMount() {
     this.props.fetchPosts();
-    this.props.fetchComments();
-    this.props.fetchSubComments();
+    window.addEventListener("scroll", this.onScrollEvent);
   }
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.onScrollEvent);
+  }
+  onScrollEvent = () => {
+    if (this.props.isFetchingPosts) return;
+    if (window.scrollY + window.innerHeight === this.getScrollHeight())
+      this.props.fetchPosts();
+  };
+  getScrollHeight = () => {
+    var D = document;
+    return Math.max(
+      D.body.scrollHeight,
+      D.documentElement.scrollHeight,
+      D.body.offsetHeight,
+      D.documentElement.offsetHeight,
+      D.body.clientHeight,
+      D.documentElement.clientHeight
+    );
+  };
   render() {
     const { postsIds } = this.props;
     return (
@@ -40,7 +59,8 @@ class Posts extends Component<Props, {}> {
 
 const mapStateToProps = (state: RootState): StoreProps => {
   return {
-    postsIds: state.post.allIds
+    postsIds: state.post.allIds,
+    isFetchingPosts: state.post.status.fetchingPosts
   };
 };
 
