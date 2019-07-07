@@ -27,9 +27,9 @@ const LoggedOut: React.FC<Props> = ({ login, loginErrors, isLoginLoading }) => {
   const errorOccured: boolean = Object.keys(loginErrors).length > 0;
   return (
     <React.Fragment>
-      <Menu.Item header className="header-logo">Social Network</Menu.Item>
+      <Menu.Item header className="header__logo">Social Network</Menu.Item>
       <Menu.Item position="right">
-        <Form className="header-login-form" onSubmit={handleLogin}>
+        <Form className="login" onSubmit={handleLogin}>
           <Form.Group>
             <Form.Input
               placeholder="Username"

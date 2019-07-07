@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { Card, Image, Icon } from "semantic-ui-react";
 import { isNull } from "util";
 
-import PostMenu from "./PostMenu";
-import Comments from "../comment/Comments";
+import PostMenu from "./Menu";
+import CommentList from "../comment/List";
 import Avatar from "../../../../other/Avatar";
 import { RootState } from "MyTypes";
 import { Post as PostType } from "../../../../../store/post/models";
@@ -27,7 +27,7 @@ const Post: React.FC<Props> = ({ postData, postId, user, commentsCount }) => {
   const { authorName, date, content, image, likedBy, authorGender } = postData;
   const isPostOwner: boolean = !isNull(user) && user._id === postData.owner;
   return (
-    <Card className="card-main">
+    <Card className="posts__card">
       <Card.Content>
         {isPostOwner && <PostMenu postId={postId} />}
         <Avatar gender={authorGender} />
@@ -37,7 +37,7 @@ const Post: React.FC<Props> = ({ postData, postId, user, commentsCount }) => {
       </Card.Content>
       {image && <Image src={image} />}
       <Card.Content>
-        <span className="card-likes">
+        <span className="posts__likes">
           <Icon name="heart" />
           {likedBy.length} {`like${likedBy.length !== 1 ? "s" : ""}`}
         </span>
@@ -47,8 +47,8 @@ const Post: React.FC<Props> = ({ postData, postId, user, commentsCount }) => {
           {`comment${commentsCount !== 1 ? "s" : ""}`}
         </span>
       </Card.Content>
-      <Card.Content>
-        <Comments postId={postId} />
+      <Card.Content className="comments">
+        <CommentList postId={postId} />
       </Card.Content>
     </Card>
   );

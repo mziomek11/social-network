@@ -1,58 +1,58 @@
 $card-width: 500px;
 
-textarea {
-  resize: none !important;
+.posts__card {
+  width: $card-width !important;
 }
 
-.main-container {
+.posts__textarea {
+  textarea {
+    resize: none !important;
+  }
+}
+
+.posts__input {
+  input,
+  textarea {
+    background: rgb(248, 248, 248) !important;
+  }
+}
+
+.posts__input--right-margin {
+  input,
+  textarea {
+    margin-right: 30px !important;
+  }
+}
+
+.posts__menu-container {
+  float: right;
   position: relative;
 }
 
-.message-menu {
+.posts__menu-icon {
+  float: right;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.posts__menu {
   position: absolute;
-  top: 0;
+  top: 8px;
   right: 0;
+  z-index: 10;
 }
 
-.card-main {
-  width: $card-width !important;
-
-  .card-menu-container {
-    float: right;
-    position: relative;
-
-    .card-menu {
-      position: absolute;
-      top: 8px;
-      right: 0;
-      z-index: 10;
-    }
-  }
-
-  .card-icon {
-    float: right;
-
-    &:hover {
-      cursor: pointer;
-    }
-  }
-
-  .card-likes {
-    float: right;
-  }
-
-  .card-input {
-    input {
-      background: rgb(248, 248, 248) !important;
-    }
-  }
+.posts__likes {
+  float: right;
 }
 
-.post-add-form {
+.posts__add {
   width: $card-width !important;
 }
 
-.post-update-container {
+.posts__update-container {
   position: fixed;
   top: 0;
   left: 0;
@@ -61,13 +61,27 @@ textarea {
   z-index: 100;
   background: rgba(0, 0, 0, 0.15);
   animation: cubic-bezier(0.075, 0.82, 0.165, 1) updateMenuEnter 1s;
+}
 
-  .card-post-update {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -80%);
-  }
+.posts__update {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -80%);
+}
+
+.comments__update {
+  transform: translateY(-32px);
+  max-height: 0px;
+}
+
+.comments__update-actions {
+  margin-top: 44px;
+}
+
+.comments__show-more-subcomments {
+  margin-left: 21px;
+  padding-top: 8px;
 }
 
 @keyframes updateMenuEnter {
@@ -78,48 +92,3 @@ textarea {
     opacity: 1;
   }
 }
-
-.comments-clickable {
-  color: #4183c4;
-  &:hover {
-    color: #1e70bf;
-    cursor: pointer;
-  }
-}
-
-.comment-update-actions {
-  margin-top: 44px;
-}
-
-.comment-update-form {
-  transform: translateY(-32px);
-  max-height: 0px;
-
-  .comment-update-input input {
-    margin-right: 30px !important;
-  }
-}
-
-.subcommets-show-more {
-  margin-left: 21px;
-  padding-top: 8px;
-}
-
-// .subcomments-form-container {
-//   max-height: 79.5px !important;
-//   height: 79.5px !important;
-//   overflow: hidden !important;
-// }
-
-// .subcomments-form {
-//   transform: translateY(3px);
-// }
-
-// .subcomments-form-actions{
-//   transform: translateY(5px);
-// }
-
-// .subcomments-form-input {
-//   // margin-left: 65px !important;
-//   margin-right: 30px !important;
-// }

@@ -9,7 +9,7 @@ const Community = () => {
       <Header size="huge" textAlign="center">
         Join our community!
       </Header>
-      <img src={people} alt="connected people" />
+      <img src={people} alt="connected people" className="home__image"/>
     </React.Fragment>
   );
 };

@@ -13,8 +13,8 @@ type StateProps = {
 
 const Header: React.FC<StateProps> = ({ isAuthenticated }) => {
   return (
-    <Menu size="large" stackable>
-      <Container className="header-content">
+    <Menu size="large" stackable className="header">
+      <Container className="header__content">
         {isAuthenticated ? <LoggedInLinks /> : <LoggedOutLinks />}
       </Container>
     </Menu>

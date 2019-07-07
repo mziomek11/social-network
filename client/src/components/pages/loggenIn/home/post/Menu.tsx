@@ -5,7 +5,7 @@ import { Icon, Menu, Loader } from "semantic-ui-react";
 
 import { RootState } from "MyTypes";
 import { deletePost } from "../../../../../store/post/actions";
-import PostUpdate from "./PostUpdate";
+import PostUpdateForm from "./UpdateForm";
 
 type DispatchProps = {
   deletePost: () => void;
@@ -52,20 +52,20 @@ class PostMenu extends React.Component<Props, State> {
     const { isOpen, isUpdating } = this.state;
     const { postId, deletingPost } = this.props;
     return (
-      <div className="card-menu-container" ref={this.toggleContainer}>
+      <div className="posts__menu-container" ref={this.toggleContainer}>
         <Icon
           name="options"
           onClick={() => this.setState({ isOpen: !this.state.isOpen })}
-          className="card-icon"
+          className="posts__menu-icon"
         />
         {isUpdating && (
-          <PostUpdate
+          <PostUpdateForm
             postId={postId}
             closeWindow={() => this.setState({ isUpdating: false })}
           />
         )}
         {isOpen && (
-          <Menu vertical className="card-menu" size="small">
+          <Menu vertical className="posts__menu" size="small">
             <Menu.Item onClick={this.handleDeleteClick}>
               {deletingPost ? (
                 <Loader active size="tiny" />

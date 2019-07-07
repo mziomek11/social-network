@@ -3,7 +3,7 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
 import { RootState } from "MyTypes";
-import PostElement from "./Post";
+import Post from ".";
 import { fetchPosts } from "../../../../../store/post/actions";
 import { fetchComments } from "../../../../../store/comment/actions";
 import { fetchSubComments } from "../../../../../store/subComment/actions";
@@ -31,7 +31,7 @@ class Posts extends Component<Props, {}> {
     return (
       <div>
         {postsIds.map(id => (
-          <PostElement key={id} postId={id} />
+          <Post key={id} postId={id} />
         ))}
       </div>
     );

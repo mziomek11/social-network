@@ -25,7 +25,7 @@ const ShowMore: React.FC<Props> = ({
   if (!canShowMoreSubComments) return null;
   return (
     <div
-      className="comments-clickable"
+      className="clickable"
       onClick={() => onShowMoreClick()}
     >
       {commentsToShow === 0 ? (

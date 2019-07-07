@@ -24,19 +24,19 @@ const FormInsideComment: React.FC<Props> = ({
   };
   const handleCancel = () => {
     if (!proccessing) onCancel();
-  }
+  };
   return (
     <Comment.Content>
-      <Form onSubmit={handleSubmit} className="comment-update-form">
+      <Form onSubmit={handleSubmit} className="comments__update">
         <Form.Input
           value={content}
           onChange={handleChange}
           size="small"
-          className="comment-update-input"
+          className="comment-update-input posts__input posts__input--right-margin"
           autoFocus
         />
       </Form>
-      <Comment.Actions className="comment-update-actions">
+      <Comment.Actions className="comments__update-actions">
         <Comment.Action onClick={() => handleCancel()}>Cancel</Comment.Action>
       </Comment.Actions>
     </Comment.Content>

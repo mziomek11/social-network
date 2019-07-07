@@ -53,13 +53,13 @@ class PostUpdate extends React.Component<Props, State> {
     if (!post) return null;
     const { authorName, date, image, authorGender } = post;
     return (
-      <div className="post-update-container">
-        <Card className="card-main card-post-update">
+      <div className="posts__update-container">
+        <Card className="posts__card posts__update">
           <Card.Content>
             <Icon
               name="close"
               onClick={this.props.closeWindow}
-              className="card-icon"
+              className="posts__menu-icon"
             />
             <Avatar gender={authorGender} />
             <Card.Header>{authorName}</Card.Header>

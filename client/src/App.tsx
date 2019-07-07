@@ -13,7 +13,7 @@ import HomePage from "./components/pages/loggenIn/home/index";
 import ProfilePage from "./components/pages/loggenIn/profile";
 import MessagesPage from "./components/pages/loggenIn/messages";
 import FriendsPage from "./components/pages/loggenIn/friends";
-import "./styles.scss";
+import "./scss/main.scss";
 
 type StateProps = {
   isInitCheckDone: boolean;

@@ -56,14 +56,14 @@ class CommentMenu extends React.Component<Props, State> {
     const { isOpen } = this.state;
     const { canDelete, canUpdate, deletingComment } = this.props;
     return (
-      <div className="card-menu-container" ref={this.toggleContainer}>
+      <div className="posts__menu-container" ref={this.toggleContainer}>
         <Icon
           name="options"
           onClick={() => this.setState({ isOpen: !isOpen })}
-          className="card-icon"
+          className="posts__menu-icon"
         />
         {isOpen && (
-          <Menu vertical className="card-menu" size="small">
+          <Menu vertical className="posts__menu" size="small">
             {canDelete && (
               <Menu.Item onClick={this.handleDeleteClick}>
                 {deletingComment ? (

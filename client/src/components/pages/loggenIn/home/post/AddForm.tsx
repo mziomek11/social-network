@@ -27,15 +27,16 @@ const PostAddForm: React.FC<Props> = ({ addPost, addingPost }) => {
     }
   };
   return (
-    <Card className="card-main">
+    <Card className="posts__card">
       <Card.Content>
         <Header size="large">Add new post</Header>
-        <Form onSubmit={handleSubmit} className="post-add-form">
+        <Form onSubmit={handleSubmit} className="posts__add">
           <Form.TextArea
             placeholder="Post content..."
             value={content}
             onChange={e => setContent(e.currentTarget.value)}
             rows={5}
+            className="posts__textarea posts__input"
           />
           <Form.Button primary loading={addingPost}>
             Add

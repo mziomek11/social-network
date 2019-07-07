@@ -13,14 +13,14 @@ type StateProps = { isAuthenticated: boolean };
 const Login: React.FC<StateProps> = ({ isAuthenticated }) => {
   if (isAuthenticated) return <Redirect to="/" />;
   return (
-    <Container>
+    <Container className="home">
       <Grid>
         <Grid.Row>
           <Grid.Column
             floated="left"
             computer={7}
             only={"computer"}
-            className="home-left-side"
+            className="home__left"
           >
             <Community />
           </Grid.Column>

@@ -76,11 +76,7 @@ class RegisterForm extends Component<Props, State> {
     const anyErrors: boolean = Object.keys(errors).length > 0;
 
     return (
-      <Form
-        error={anyErrors}
-        onSubmit={this.handleSubmit}
-        className={"register-form"}
-      >
+      <Form error={anyErrors} onSubmit={this.handleSubmit} className="register">
         <Header dividing size="huge">
           Create New Account
         </Header>

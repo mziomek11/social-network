@@ -55,13 +55,13 @@ class CommentAddForm extends React.Component<Props, State> {
           size="small"
           value={this.state.comment}
           onChange={this.handleChange}
-          className="card-input"
+          className="posts__input"
           autoFocus
         />
       </Form>
     ) : (
       <span
-        className="comments-clickable"
+        className="clickable"
         onClick={() => this.setState({ isTyping: true })}
       >
         Write comment...

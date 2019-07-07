@@ -3,9 +3,9 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { Comment } from "semantic-ui-react";
 
-import AddForm from "./SubCommentAddForm";
-import SubCommentMain from "./SubCommentMain";
-import ShowMore from "./ShowMore";
+import SubCommentAddForm from "./AddForm";
+import SubCommentMain from ".";
+import ShowMoreSubComments from "./ShowMore";
 import { RootState } from "MyTypes";
 import { subCommentActions } from "../../../../../store/subComment";
 import {
@@ -59,7 +59,7 @@ const SubComments: React.FC<Props> = ({
 
   return (
     <React.Fragment>
-      <ShowMore
+      <ShowMoreSubComments
         subCommentsToShow={subCommentsToShow}
         commentId={commentId}
         onShowMoreClick={() =>
@@ -78,7 +78,7 @@ const SubComments: React.FC<Props> = ({
               />
             ))}
           {isReplying && (
-            <AddForm
+            <SubCommentAddForm
               commentId={commentId}
               onAddingDone={() => setSubCommnetsToShow(subCommentsToShow + 1)}
             />

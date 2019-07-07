@@ -1,0 +1,11 @@
+body {
+    background: #eee;
+}
+
+.clickable {
+  color: #4183c4;
+  &:hover {
+    color: #1e70bf;
+    cursor: pointer;
+  }
+}

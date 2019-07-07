@@ -1,23 +1,27 @@
 @import "../../scss/mixins.scss";
 
 @mixin nav-break-point {
-  @media (max-width: #{558px}) {
+  @media (max-width: #{562px}) {
     @content;
   }
 }
 
-.header-content {
+.header__content {
   min-height: 65px !important;
 }
 
 @include nav-break-point {
-  .header-login-form {
+  .login {
     width: 100% !important;
     .fields {
       flex-direction: column !important;
 
       .field {
         width: 100% !important;
+
+        input {
+          width: 100% !important;
+        }
       }
 
       .field:nth-child(2) {
@@ -26,7 +30,7 @@
     }
   }
 
-  .header-logo {
+  .header__logo {
     text-align: center !important;
   }
 

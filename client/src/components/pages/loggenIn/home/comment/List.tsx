@@ -3,11 +3,11 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { Comment } from "semantic-ui-react";
 
-import CommentMain from "./CommentMain";
-import ShowMore from "./ShowMore";
-import AddForm from "./CommentAddForm";
+import CommentMain from ".";
+import ShowMoreComments from "./ShowMore";
+import CommentAddForm from "./AddForm";
 import { RootState } from "MyTypes";
-import { commentActions } from "../../../../../store/comment/";
+import { commentActions } from "../../../../../store/comment";
 import {
   CommentsById,
   Comment as CommentType
@@ -48,7 +48,7 @@ const Comments: React.FC<Props> = ({
   postComments.splice(0, postComments.length - commentsToShow);
   return (
     <React.Fragment>
-      <ShowMore
+      <ShowMoreComments
         postId={postId}
         commentsToShow={commentsToShow}
         onShowMoreClick={() =>
@@ -60,7 +60,7 @@ const Comments: React.FC<Props> = ({
           <CommentMain key={_id} commentId={_id} postId={postId} />
         ))}
       </Comment.Group>}
-      <AddForm
+      <CommentAddForm
         postId={postId}
         onAddingDone={() => setCommnetsToShow(commentsToShow + 1)}
       />

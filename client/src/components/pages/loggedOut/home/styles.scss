@@ -1,14 +1,16 @@
 $top-margin: 30px;
 
-.home-left-side {
-    text-align: center;
-    margin-top: $top-margin !important;
-    img {
-        width: 100%;
-        margin-top: $top-margin;
-        user-select: none;
-    }
+.home__left {
+  text-align: center;
+  margin-top: $top-margin !important;
 }
-.register-form {
-    margin-top: $top-margin;
+
+.home__image {
+  width: 100%;
+  margin-top: $top-margin;
+  user-select: none;
+}
+
+.register {
+  margin-top: $top-margin;
 }
