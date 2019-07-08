@@ -59,7 +59,6 @@ const SubComments: React.FC<Props> = ({
   if (fetchedSubCommentsCount !== subComments.length) {
     setFetchedSubCommentCount(subComments.length);
   }
-
   return (
     <React.Fragment>
       {subCommentsCount > fetchedSubCommentsCount && (

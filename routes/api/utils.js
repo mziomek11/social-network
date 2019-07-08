@@ -72,7 +72,7 @@ module.exports.updateDoc = async (req, res, model) => {
     await model.findByIdAndUpdate(req.params.id, updateData);
     const updatedDoc = await model.findById(req.params.id);
 
-    res.json(updatedDoc);
+    return updatedDoc;
   } catch (err) {
     res.status(400).json({ msg: "Send correct data" });
     console.log(err);

@@ -44,6 +44,17 @@ export const addCommentSuccess = (
   oldComments: CommentsById,
   { _id, ...rest }: Comment
 ) => {
+  return action(ADD_COMMENT_FAILED);
+  const newComments: CommentsById = deepCopy(oldComments);
+  newComments[_id] = { ...rest, _id };
+  const payload = { newById: newComments, id: _id };
+  return action(ADD_COMMENT_SUCCESS, payload);
+};
+
+export const addCommentSocket = (
+  oldComments: CommentsById,
+  { _id, ...rest }: Comment
+) => {
   const newComments: CommentsById = deepCopy(oldComments);
   newComments[_id] = { ...rest, _id };
   const payload = { newById: newComments, id: _id };
@@ -54,6 +65,20 @@ export const updateComment = (id: string, data: UpdateOpinionData) =>
   action(UPDATE_COMMENT, { id, data });
 export const updateCommentFailed = () => action(UPDATE_COMMENT_FAILED);
 export const updateCommentSuccess = (
+  oldComments: CommentsById,
+  updatedComment: Comment
+) => {
+  return action(UPDATE_COMMENT_FAILED);
+  const newComments: CommentsById = deepCopy(oldComments);
+  newComments[updatedComment._id] = {
+    ...newComments[updatedComment._id],
+    ...updatedComment
+  };
+  const payload = { newById: newComments };
+  return action(UPDATE_COMMENT_SUCCESS, payload);
+};
+
+export const updateCommentSocket = (
   oldComments: CommentsById,
   updatedComment: Comment
 ) => {
@@ -69,6 +94,14 @@ export const updateCommentSuccess = (
 export const deleteComment = (id: string) => action(DELETE_COMMENT, id);
 export const deleteCommentFailed = () => action(DELETE_COMMENT_FAILED);
 export const deleteCommentSuccess = (oldComments: CommentsById, id: string) => {
+  return action(DELETE_COMMENT_FAILED);
+  const newComments: CommentsById = deepCopy(oldComments);
+  delete newComments[id];
+  const payload = { newById: newComments, id };
+  return action(DELETE_COMMENT_SUCCESS, payload);
+};
+
+export const deleteCommentSocket = (oldComments: CommentsById, id: string) => {
   const newComments: CommentsById = deepCopy(oldComments);
   delete newComments[id];
   const payload = { newById: newComments, id };

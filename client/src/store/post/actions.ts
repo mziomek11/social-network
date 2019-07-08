@@ -46,6 +46,14 @@ export const fetchPostsSuccess = (
 export const addPost = (data: AddPostData) => action(ADD_POST, data);
 export const addPostFailed = () => action(ADD_POST_FAILED);
 export const addPostSuccess = (oldPosts: PostsById, { _id, ...rest }: Post) => {
+  return action(ADD_POST_FAILED);
+  const newPosts: PostsById = deepCopy(oldPosts);
+  newPosts[_id] = { ...rest, _id };
+  const payload = { newById: newPosts, id: _id };
+  return action(ADD_POST_SUCCESS, payload);
+};
+
+export const addPostSocket = (oldPosts: PostsById, { _id, ...rest }: Post) => {
   const newPosts: PostsById = deepCopy(oldPosts);
   newPosts[_id] = { ...rest, _id };
   const payload = { newById: newPosts, id: _id };
@@ -56,6 +64,14 @@ export const updatePost = (id: string, data: UpdateOpinionData) =>
   action(UPDATE_POST, { id, data });
 export const updatePostFailed = () => action(UPDATE_POST_FAILED);
 export const updatePostSuccess = (oldPosts: PostsById, updatedPost: Post) => {
+  return action(UPDATE_POST_FAILED)
+  const newPosts: PostsById = deepCopy(oldPosts);
+  newPosts[updatedPost._id] = { ...newPosts[updatedPost._id], ...updatedPost };
+  const payload = { newById: newPosts };
+  return action(UPDATE_POST_SUCCESS, payload);
+};
+
+export const updatePostSocket = (oldPosts: PostsById, updatedPost: Post) => {
   const newPosts: PostsById = deepCopy(oldPosts);
   newPosts[updatedPost._id] = { ...newPosts[updatedPost._id], ...updatedPost };
   const payload = { newById: newPosts };
@@ -65,6 +81,14 @@ export const updatePostSuccess = (oldPosts: PostsById, updatedPost: Post) => {
 export const deletePost = (id: string) => action(DELETE_POST, id);
 export const deletePostFailed = () => action(DELETE_POST_FAILED);
 export const deletePostSuccess = (oldPosts: PostsById, id: string) => {
+  return action(DELETE_POST_FAILED);
+  const newPosts: PostsById = deepCopy(oldPosts);
+  delete newPosts[id];
+  const payload = { newById: newPosts, id };
+  return action(DELETE_POST_SUCCESS, payload);
+};
+
+export const deletePostSocket = (oldPosts: PostsById, id: string) => {
   const newPosts: PostsById = deepCopy(oldPosts);
   delete newPosts[id];
   const payload = { newById: newPosts, id };

@@ -43,6 +43,17 @@ export const addSubCommentSuccess = (
   oldSubComments: SubCommentsById,
   { _id, ...rest }: SubComment
 ) => {
+  return action(ADD_SUBCOMMENT_FAILED);
+  const newSubComments: SubCommentsById = deepCopy(oldSubComments);
+  newSubComments[_id] = { ...rest, _id };
+  const payload = { newById: newSubComments, id: _id };
+  return action(ADD_SUBCOMMENT_SUCCESS, payload);
+};
+
+export const addSubCommentSocket = (
+  oldSubComments: SubCommentsById,
+  { _id, ...rest }: SubComment
+) => {
   const newSubComments: SubCommentsById = deepCopy(oldSubComments);
   newSubComments[_id] = { ...rest, _id };
   const payload = { newById: newSubComments, id: _id };
@@ -53,6 +64,20 @@ export const updateSubComment = (id: string, data: UpdateOpinionData) =>
   action(UPDATE_SUBCOMMENT, { id, data });
 export const updateSubCommentFailed = () => action(UPDATE_SUBCOMMENT_FAILED);
 export const updateSubCommentSuccess = (
+  oldSubComments: SubCommentsById,
+  updatedSubComment: SubComment
+) => {
+  return action(UPDATE_SUBCOMMENT_FAILED);
+  const newSubComments: SubCommentsById = deepCopy(oldSubComments);
+  newSubComments[updatedSubComment._id] = {
+    ...newSubComments[updatedSubComment._id],
+    ...updatedSubComment
+  };
+  const payload = { newById: newSubComments };
+  return action(UPDATE_SUBCOMMENT_SUCCESS, payload);
+};
+
+export const updateSubCommentSocket = (
   oldSubComments: SubCommentsById,
   updatedSubComment: SubComment
 ) => {
@@ -68,6 +93,17 @@ export const updateSubCommentSuccess = (
 export const deleteSubComment = (id: string) => action(DELETE_SUBCOMMENT, id);
 export const deleteSubCommentFailed = () => action(DELETE_SUBCOMMENT_FAILED);
 export const deleteSubCommentSuccess = (
+  oldSubComments: SubCommentsById,
+  id: string
+) => {
+  return action(DELETE_SUBCOMMENT_FAILED);
+  const newSubComments: SubCommentsById = deepCopy(oldSubComments);
+  delete newSubComments[id];
+  const payload = { newById: newSubComments, id };
+  return action(DELETE_SUBCOMMENT_SUCCESS, payload);
+};
+
+export const deleteSubCommentSocket = (
   oldSubComments: SubCommentsById,
   id: string
 ) => {

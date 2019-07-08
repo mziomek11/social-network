@@ -1,5 +1,6 @@
 const express = require("express");
 const auth = require("../../middleware/auth");
+const server = require("../../server");
 const router = express.Router();
 
 // Impoering model
@@ -72,6 +73,7 @@ router.post("/:comment", auth, async (req, res) => {
       "comment"
     ]);
 
+    server.io.sockets.emit("subCommentAdd", subCommentWithAuthorData);
     res.json(subCommentWithAuthorData);
   } catch (e) {
     res.status(400).json({ msg: "Send correct data" });
@@ -82,7 +84,9 @@ router.post("/:comment", auth, async (req, res) => {
 // @desc    Update A SubComment
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
-  await updateDoc(req, res, SubComment);
+  const updatedSubComment = await updateDoc(req, res, SubComment);
+  server.io.sockets.emit("subCommentUpdate", updatedSubComment);
+  res.json(updatedSubComment);
 });
 
 // @DELETE  api/subcomments/:id
@@ -100,6 +104,10 @@ router.delete("/:id", auth, async (req, res) => {
     }
   );
 
+  server.io.sockets.emit("subCommentDelete", {
+    subCom: req.params.id,
+    com: subComment.comment
+  });
   res.json({ succes: true });
 });
 

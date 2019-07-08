@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { RootState } from "MyTypes";
 import { authActions } from "./store/auth";
+import SocketManager from "./SocketManager";
 import PrivateRoute from "./components/other/PrivateRoute";
 import Header from "./components/header";
 
@@ -28,6 +29,7 @@ type Props = StateProps & DispatchProps;
 class App extends React.Component<Props, {}> {
   componentDidMount() {
     this.props.loadUser();
+    console.log("DODAC ZEBY W KLINCIE PRZY USUNIECIU POSTA USUWALO KOMY I SUBKOMY I A PRZY USUNIECIU KOMA USUWALO SUKOMY")
   }
   render() {
     if (!this.props.isInitCheckDone) return null;
@@ -35,6 +37,7 @@ class App extends React.Component<Props, {}> {
       <React.Fragment>
         <BrowserRouter>
           <Header />
+          <SocketManager />
           <Switch>
             <Route exact path="/login" component={LoginPage} />
             <PrivateRoute exact path="/" component={HomePage} />
