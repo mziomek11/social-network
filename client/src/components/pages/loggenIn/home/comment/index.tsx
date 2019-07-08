@@ -32,48 +32,97 @@ type StateProps = {
 
 type Props = OwnProps & StateProps & DispatchProps;
 
-const CommentElement: React.FC<Props> = ({
-  comment,
-  user,
-  post,
-  commentId,
-  postId,
-  openReplying
-}) => {
-  const [updating, setUpdating] = React.useState<boolean>(false);
-
-  const canDelete: boolean =
-    !isNull(user) && (user._id === post.owner || user._id === comment.owner);
-  const canUpdate: boolean = !isNull(user) && user._id === comment.owner;
-
-  return (
-    <Comment>
-      <Comment.Avatar src={getImage(comment.authorGender)} />
-      {(canDelete || canUpdate) && !updating && (
-        <CommentMenu
-          canDelete={canDelete}
-          canUpdate={canUpdate}
-          onUpdateClick={() => setUpdating(true)}
-          commentId={commentId}
-        />
-      )}
-      {updating ? (
-        <CommentUpdateForm
-          commentId={commentId}
-          startContent={comment.content}
-          onUpdateDone={() => setUpdating(false)}
-          onCancelClick={() => setUpdating(false)}
-        />
-      ) : (
-        <CommentContent opinionData={comment} onReply={() => openReplying()} />
-      )}
-      <SubCommentList
-        postId={postId}
-        commentId={commentId}
-      />
-    </Comment>
-  );
+type State = {
+  updating: boolean;
 };
+
+class CommentElement extends React.Component<Props, State> {
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
+    const { commentId, comment } = this.props;
+    const { content } = comment;
+    if (commentId !== nextProps.commentId) return true;
+    if (content !== nextProps.comment.content) return true;
+    if (this.state.updating !== nextState.updating) return true;
+    return false;
+  }
+  readonly state: State = {
+    updating: false
+  };
+  setUpdating = (updating: boolean) => this.setState({ updating });
+  render() {
+    const { comment, user, post, commentId, postId, openReplying } = this.props;
+    const canDelete: boolean =
+      !isNull(user) && (user._id === post.owner || user._id === comment.owner);
+    const canUpdate: boolean = !isNull(user) && user._id === comment.owner;
+    return (
+      <Comment>
+        <Comment.Avatar src={getImage(comment.authorGender)} />
+        {(canDelete || canUpdate) && !this.state.updating && (
+          <CommentMenu
+            canDelete={canDelete}
+            canUpdate={canUpdate}
+            onUpdateClick={() => this.setUpdating(true)}
+            commentId={commentId}
+          />
+        )}
+        {this.state.updating ? (
+          <CommentUpdateForm
+            commentId={commentId}
+            startContent={comment.content}
+            onUpdateDone={() => this.setUpdating(false)}
+            onCancelClick={() => this.setUpdating(false)}
+          />
+        ) : (
+          <CommentContent
+            opinionData={comment}
+            onReply={() => openReplying()}
+          />
+        )}
+        <SubCommentList postId={postId} commentId={commentId} />
+      </Comment>
+    );
+  }
+}
+
+// const CommentElement: React.FC<Props> = ({
+//   comment,
+//   user,
+//   post,
+//   commentId,
+//   postId,
+//   openReplying
+// }) => {
+//   const [updating, setUpdating] = React.useState<boolean>(false);
+
+//   const canDelete: boolean =
+//     !isNull(user) && (user._id === post.owner || user._id === comment.owner);
+//   const canUpdate: boolean = !isNull(user) && user._id === comment.owner;
+
+//   return (
+//     <Comment>
+//       <Comment.Avatar src={getImage(comment.authorGender)} />
+//       {(canDelete || canUpdate) && !updating && (
+//         <CommentMenu
+//           canDelete={canDelete}
+//           canUpdate={canUpdate}
+//           onUpdateClick={() => setUpdating(true)}
+//           commentId={commentId}
+//         />
+//       )}
+//       {updating ? (
+//         <CommentUpdateForm
+//           commentId={commentId}
+//           startContent={comment.content}
+//           onUpdateDone={() => setUpdating(false)}
+//           onCancelClick={() => setUpdating(false)}
+//         />
+//       ) : (
+//         <CommentContent opinionData={comment} onReply={() => openReplying()} />
+//       )}
+//       <SubCommentList postId={postId} commentId={commentId} />
+//     </Comment>
+//   );
+// };
 
 const mapStateToProps = (
   state: RootState,

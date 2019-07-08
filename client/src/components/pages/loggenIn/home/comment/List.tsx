@@ -7,7 +7,10 @@ import CommentMain from ".";
 import ShowMoreComments from "./ShowMore";
 import CommentAddForm from "./AddForm";
 import { RootState } from "MyTypes";
-import { commentActions } from "../../../../../store/comment";
+import {
+  setFetchedCommentCount,
+  fetchComments
+} from "../../../../../store/comment/actions";
 import {
   CommentsById,
   Comment as CommentType
@@ -21,7 +24,7 @@ type StateProps = {
 };
 
 type DispatchProps = {
-  setCommentCount: (count: number) => void;
+  setFetchedCommentCount: (count: number) => void;
   fetchComments: (fetchedCommentsCount: number) => void;
 };
 
@@ -36,7 +39,7 @@ const Comments: React.FC<Props> = ({
   commentsById,
   postId,
   fetchedCommentsCount,
-  setCommentCount,
+  setFetchedCommentCount,
   postCommentsCount,
   fetchComments
 }) => {
@@ -45,7 +48,7 @@ const Comments: React.FC<Props> = ({
     .filter(comment => comment.post === postId);
 
   if (fetchedCommentsCount !== postComments.length)
-    setCommentCount(postComments.length);
+    setFetchedCommentCount(postComments.length);
 
   return (
     <React.Fragment>
@@ -84,10 +87,10 @@ const mapDispatchToProps = (
   { postId }: OwnProps
 ): DispatchProps => {
   return {
-    setCommentCount: (count: number) =>
-      dispatch(commentActions.setCommentCount(postId, count)),
+    setFetchedCommentCount: (count: number) =>
+      dispatch(setFetchedCommentCount(postId, count)),
     fetchComments: (fetchedCommentsCount: number) =>
-      dispatch(commentActions.fetchComments(postId, fetchedCommentsCount))
+      dispatch(fetchComments(postId, fetchedCommentsCount))
   };
 };
 

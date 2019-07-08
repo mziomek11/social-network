@@ -20,21 +20,25 @@ const {
 // @desc    Get All Comments
 // @access  Private
 router.get("/", auth, async (req, res) => {
-  const { count, post } = req.query;
+  try {
+    const { count, post } = req.query;
 
-  const commentsToSkip = parseInt(count);
-  const comments = await Comment.find({ post })
-    .skip(commentsToSkip)
-    .limit(2)
-    .sort({ date: -1 });
+    const commentsToSkip = parseInt(count);
+    const comments = await Comment.find({ post })
+      .skip(commentsToSkip)
+      .limit(2)
+      .sort({ date: -1 });
 
-  comments.reverse();
-  const ownersData = await getDocsOwnersData(comments);
-  const commentsWithAuthorData = getDocsWithAuthorData(comments, ownersData, [
-    "post"
-  ]);
-
-  res.json(commentsWithAuthorData);
+    comments.reverse();
+    const ownersData = await getDocsOwnersData(comments);
+    const commentsWithAuthorData = getDocsWithAuthorData(comments, ownersData, [
+      "post",
+      "subCommentsCount"
+    ]);
+    res.json(commentsWithAuthorData);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // @POST    api/comments/:post

@@ -12,7 +12,6 @@ import { User } from "../../../../../store/auth/models";
 
 type OwnProps = {
   commentId: string;
-  onAddingDone: () => void;
 };
 
 type StateProps = {
@@ -30,7 +29,6 @@ type Props = OwnProps & DispatchProps & StateProps;
 class SubCommentAddForm extends React.Component<Props> {
   componentWillReceiveProps({ addingSubComment }: Props) {
     if (this.props.addingSubComment && !addingSubComment) {
-      this.props.onAddingDone();
       this.props.closeReplying();
     }
   }

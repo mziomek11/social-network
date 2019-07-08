@@ -7,7 +7,10 @@ import SubCommentAddForm from "./AddForm";
 import SubCommentMain from ".";
 import ShowMoreSubComments from "./ShowMore";
 import { RootState } from "MyTypes";
-import { subCommentActions } from "../../../../../store/subComment";
+import {
+  setFetchedSubCommentCount,
+  fetchSubComments
+} from "../../../../../store/subComment/actions";
 import {
   SubCommentsById,
   SubComment
@@ -18,10 +21,12 @@ type StateProps = {
   subCommentsById: SubCommentsById;
   subCommentsCount: number;
   isReplying: boolean;
+  fetchedSubCommentsCount: number;
 };
 
 type DispatchProps = {
-  setSubCommentCount: (count: number) => void;
+  setFetchedSubCommentCount: (count: number) => void;
+  fetchSubComments: (fetchedSubComsCount: number) => void;
 };
 
 type OwnProps = {
@@ -37,36 +42,35 @@ const SubComments: React.FC<Props> = ({
   commentId,
   postId,
   subCommentsCount,
-  setSubCommentCount,
-  isReplying
+  setFetchedSubCommentCount,
+  isReplying,
+  fetchedSubCommentsCount,
+  fetchSubComments
 }) => {
-  const subCommentsPerAdd: number = 2;
-  const [subCommentsToShow, setSubCommnetsToShow] = React.useState<number>(0);
   useEffect(() => {
-    if (isReplying && subCommentsToShow === 0)
-      setSubCommnetsToShow(subCommentsPerAdd);
-  }, [isReplying, subCommentsToShow]);
-
+    if (isReplying && subCommentsCount > 0 && fetchedSubCommentsCount === 0) {
+      fetchSubComments(0);
+    }
+  }, [isReplying]);
   const subComments: SubComment[] = allSubComments
     .map(id => subCommentsById[id])
     .filter(subComment => subComment.comment === commentId);
 
-  if (subCommentsCount !== subComments.length) {
-    setSubCommentCount(subComments.length);
+  if (fetchedSubCommentsCount !== subComments.length) {
+    setFetchedSubCommentCount(subComments.length);
   }
-
-  subComments.splice(0, subCommentsCount - subCommentsToShow);
 
   return (
     <React.Fragment>
-      <ShowMoreSubComments
-        subCommentsToShow={subCommentsToShow}
-        commentId={commentId}
-        onShowMoreClick={() =>
-          setSubCommnetsToShow(subCommentsToShow + subCommentsPerAdd)
-        }
-      />
-      {(subComments.length !== 0 || (isReplying && subCommentsToShow > 0)) && (
+      {subCommentsCount > fetchedSubCommentsCount && (
+        <ShowMoreSubComments
+          fetchedSubCommentsCount={fetchedSubCommentsCount}
+          onShowMoreClick={() => fetchSubComments(fetchedSubCommentsCount)}
+        />
+      )}
+      {(subComments.length > 0 ||
+        (isReplying &&
+          (subCommentsCount === 0 || fetchedSubCommentsCount > 0))) && (
         <Comment.Group>
           {subComments.length > 0 &&
             subComments.map(({ _id }) => (
@@ -77,12 +81,7 @@ const SubComments: React.FC<Props> = ({
                 commentId={commentId}
               />
             ))}
-          {isReplying && (
-            <SubCommentAddForm
-              commentId={commentId}
-              onAddingDone={() => setSubCommnetsToShow(subCommentsToShow + 1)}
-            />
-          )}
+          {isReplying && <SubCommentAddForm commentId={commentId} />}
         </Comment.Group>
       )}
     </React.Fragment>
@@ -96,7 +95,8 @@ const mapStateToProps = (
   return {
     subCommentsById: state.subComment.byId,
     allSubComments: state.subComment.allIds,
-    subCommentsCount: state.subComment.countByCommentId[commentId],
+    fetchedSubCommentsCount: state.subComment.countByCommentId[commentId],
+    subCommentsCount: state.comment.byId[commentId].subCommentsCount,
     isReplying: state.comment.replyingOpen.indexOf(commentId) > -1
   };
 };
@@ -106,8 +106,10 @@ const mapDispatchToProps = (
   { commentId }: OwnProps
 ): DispatchProps => {
   return {
-    setSubCommentCount: (count: number) =>
-      dispatch(subCommentActions.setSubCommentCount(commentId, count))
+    setFetchedSubCommentCount: (count: number) =>
+      dispatch(setFetchedSubCommentCount(commentId, count)),
+    fetchSubComments: (fetchedSubComsCount: number) =>
+      dispatch(fetchSubComments(commentId, fetchedSubComsCount))
   };
 };
 

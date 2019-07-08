@@ -4,6 +4,10 @@ $card-width: 500px;
   width: $card-width !important;
 }
 
+.posts__loader {
+  margin: 15px !important;
+}
+
 .posts__textarea {
   textarea {
     resize: none !important;

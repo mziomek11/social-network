@@ -25,7 +25,8 @@ export const fetchPostsSuccess = (
   oldPosts: PostsById,
   oldIds: string[],
   fetchedPosts: Post[],
-  fetchedComments: Comment[]
+  fetchedComments: Comment[],
+  hasMorePosts: boolean
 ) => {
   const newPosts: PostsById = deepCopy(oldPosts);
   const newIds: string[] = [...oldIds];
@@ -36,7 +37,8 @@ export const fetchPostsSuccess = (
   const payload = {
     newById: newPosts,
     ids: newIds,
-    fetchedComments: fetchedComments
+    fetchedComments: fetchedComments,
+    canFetchMore: hasMorePosts
   };
   return action(FETCH_POSTS_SUCCESS, payload);
 };

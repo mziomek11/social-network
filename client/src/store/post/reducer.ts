@@ -28,6 +28,7 @@ type PostState = Readonly<{
     deletingPost: boolean;
     addingPost: boolean;
     updatingPost: boolean;
+    canFetchMore: boolean;
   };
 }>;
 
@@ -39,7 +40,8 @@ const initState: PostState = {
     gettingPost: false,
     deletingPost: false,
     addingPost: false,
-    updatingPost: false
+    updatingPost: false,
+    canFetchMore: true
   }
 };
 
@@ -73,6 +75,11 @@ export default combineReducers<PostState, PostAction>({
       case FETCH_POSTS:
         return { ...state, fetchingPosts: true };
       case FETCH_POSTS_SUCCESS:
+        return {
+          ...state,
+          fetchingPosts: false,
+          canFetchMore: action.payload.canFetchMore
+        };
       case FETCH_POSTS_FAILED:
         return { ...state, fetchingPosts: false };
       case DELETE_POST:

@@ -32,46 +32,100 @@ type StateProps = {
 
 type Props = OwnProps & StateProps & DispatchProps;
 
-const SubCommentElement: React.FC<Props> = ({
-  subComment,
-  user,
-  post,
-  subCommentId,
-  openReplying
-}) => {
-  const [updating, setUpdating] = React.useState<boolean>(false);
-
-  const canDelete: boolean =
-    !isNull(user) && (user._id === post.owner || user._id === subComment.owner);
-  const canUpdate: boolean = !isNull(user) && user._id === subComment.owner;
-
-  return (
-    <Comment>
-      <Comment.Avatar src={getImage(subComment.authorGender)} />
-      {(canDelete || canUpdate) && !updating && (
-        <SubCommentMenu
-          canDelete={canDelete}
-          canUpdate={canUpdate}
-          onUpdateClick={() => setUpdating(true)}
-          subCommentId={subCommentId}
-        />
-      )}
-      {updating ? (
-        <SubCommentUpdate
-          subCommentId={subCommentId}
-          startContent={subComment.content}
-          onUpdateDone={() => setUpdating(false)}
-          onCancelClick={() => setUpdating(false)}
-        />
-      ) : (
-        <SubCommentContent
-          opinionData={subComment}
-          onReply={() => openReplying()}
-        />
-      )}
-    </Comment>
-  );
+type State = {
+  updating: boolean;
 };
+
+class SubComment extends React.Component<Props, State> {
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
+    const { subCommentId, subComment } = this.props;
+    const { content } = subComment;
+    if (subCommentId !== nextProps.subCommentId) return true;
+    if (content !== nextProps.subComment.content) return true;
+    if (this.state.updating !== nextState.updating) return true;
+    return false;
+  }
+  readonly state: State = {
+    updating: false
+  };
+  setUpdating = (updating: boolean) => this.setState({ updating });
+  render() {
+    const { subComment, user, post, subCommentId, openReplying } = this.props;
+    const { updating } = this.state;
+    const canDelete: boolean =
+      !isNull(user) &&
+      (user._id === post.owner || user._id === subComment.owner);
+    const canUpdate: boolean = !isNull(user) && user._id === subComment.owner;
+
+    return (
+      <Comment>
+        <Comment.Avatar src={getImage(subComment.authorGender)} />
+        {(canDelete || canUpdate) && !updating && (
+          <SubCommentMenu
+            canDelete={canDelete}
+            canUpdate={canUpdate}
+            onUpdateClick={() => this.setUpdating(true)}
+            subCommentId={subCommentId}
+          />
+        )}
+        {updating ? (
+          <SubCommentUpdate
+            subCommentId={subCommentId}
+            startContent={subComment.content}
+            onUpdateDone={() => this.setUpdating(false)}
+            onCancelClick={() => this.setUpdating(false)}
+          />
+        ) : (
+          <SubCommentContent
+            opinionData={subComment}
+            onReply={() => openReplying()}
+          />
+        )}
+      </Comment>
+    );
+  }
+}
+
+// const SubCommentElement: React.FC<Props> = ({
+//   subComment,
+//   user,
+//   post,
+//   subCommentId,
+//   openReplying
+// }) => {
+//   const [updating, setUpdating] = React.useState<boolean>(false);
+
+//   const canDelete: boolean =
+//     !isNull(user) && (user._id === post.owner || user._id === subComment.owner);
+//   const canUpdate: boolean = !isNull(user) && user._id === subComment.owner;
+
+//   return (
+//     <Comment>
+//       <Comment.Avatar src={getImage(subComment.authorGender)} />
+//       {(canDelete || canUpdate) && !updating && (
+//         <SubCommentMenu
+//           canDelete={canDelete}
+//           canUpdate={canUpdate}
+//           onUpdateClick={() => setUpdating(true)}
+//           subCommentId={subCommentId}
+//         />
+//       )}
+//       {updating ? (
+//         <SubCommentUpdate
+//           subCommentId={subCommentId}
+//           startContent={subComment.content}
+//           onUpdateDone={() => setUpdating(false)}
+//           onCancelClick={() => setUpdating(false)}
+//         />
+//       ) : (
+//         <SubCommentContent
+//           opinionData={subComment}
+//           onReply={() => openReplying()}
+//         />
+//       )}
+//     </Comment>
+//   );
+// };
 
 const mapStateToProps = (
   state: RootState,
@@ -96,4 +150,4 @@ const mapDispatchToProps = (
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SubCommentElement);
+)(SubComment);

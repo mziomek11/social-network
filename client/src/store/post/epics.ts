@@ -37,7 +37,8 @@ export const fetchPosts: Epic<RootAction, RootAction, RootState> = (
               state$.value.post.byId,
               state$.value.post.allIds,
               response.posts,
-              response.comments
+              response.comments,
+              response.hasMorePosts
             )
           ),
           catchError(() => of(fetchPostsFailed()))

@@ -75,7 +75,7 @@ export const deleteCommentSuccess = (oldComments: CommentsById, id: string) => {
   return action(DELETE_COMMENT_SUCCESS, payload);
 };
 
-export const setCommentCount = (id: string, count: number) =>
+export const setFetchedCommentCount = (id: string, count: number) =>
   action(SET_COMMENTS_COUNT, { id, count });
 
 export const openReplying = (id: string) => action(OPEN_REPLYING, id);

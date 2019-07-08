@@ -19,7 +19,8 @@ import {
 import { SubCommentsById, SubComment, AddSubCommentData } from "./models";
 import { UpdateOpinionData } from "../models";
 
-export const fetchSubComments = () => action(FETCH_SUBCOMMENTS);
+export const fetchSubComments = (commentId: string, subCommentsCount: number) =>
+  action(FETCH_SUBCOMMENTS, { commentId, subCommentsCount });
 export const fetchSubCommentsFailed = () => action(FETCH_SUBCOMMENTS_FAILED);
 export const fetchSubCommentsSuccess = (
   oldSubComments: SubCommentsById,
@@ -76,5 +77,5 @@ export const deleteSubCommentSuccess = (
   return action(DELETE_SUBCOMMENT_SUCCESS, payload);
 };
 
-export const setSubCommentCount = (id: string, count: number) =>
+export const setFetchedSubCommentCount = (id: string, count: number) =>
   action(SET_SUBCOMMENTS_COUNT, { id, count });

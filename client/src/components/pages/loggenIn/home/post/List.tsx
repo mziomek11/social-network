@@ -9,6 +9,7 @@ import { fetchPosts } from "../../../../../store/post/actions";
 type StoreProps = {
   postsIds: string[];
   isFetchingPosts: boolean;
+  canFetchMore: boolean;
 };
 
 type DispatchProps = {
@@ -26,8 +27,8 @@ class Posts extends Component<Props, {}> {
     window.removeEventListener("scroll", this.onScrollEvent);
   }
   onScrollEvent = () => {
-    if (this.props.isFetchingPosts) return;
-    if (window.scrollY + window.innerHeight === this.getScrollHeight())
+    if (this.props.isFetchingPosts || !this.props.canFetchMore) return;
+    if (window.scrollY + window.innerHeight > this.getScrollHeight() - 100)
       this.props.fetchPosts();
   };
   getScrollHeight = () => {
@@ -56,7 +57,8 @@ class Posts extends Component<Props, {}> {
 const mapStateToProps = (state: RootState): StoreProps => {
   return {
     postsIds: state.post.allIds,
-    isFetchingPosts: state.post.status.fetchingPosts
+    isFetchingPosts: state.post.status.fetchingPosts,
+    canFetchMore: state.post.status.canFetchMore
   };
 };
 

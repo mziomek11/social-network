@@ -22,22 +22,25 @@ const {
 // @desc    Get All Posts
 // @access  Private
 router.get("", auth, async (req, res) => {
-  let count = req.query.count;
+  const postsPerRequest = 4;
+  let postsToSkip = req.query.count;
   try {
-    count = parseInt(count);
+    postsToSkip = parseInt(postsToSkip);
   } catch (err) {
     return res.json({ error: true });
   }
 
-  console.time("fetchign psots");
   const posts = await Post.find()
-    .limit(4)
-    .skip(count)
+    .limit(postsPerRequest)
+    .skip(postsToSkip)
     .sort({ date: -1 });
   const ownersData = await getDocsOwnersData(posts);
   const postsWithAuthorData = getDocsWithAuthorData(posts, ownersData, [
     "commentsCount"
   ]);
+
+  const postsCount = await Post.countDocuments();
+  const hasMorePosts = postsCount > postsToSkip + postsPerRequest;
 
   let comments = [];
   for (let i = 0; i < posts.length; i++) {
@@ -52,10 +55,14 @@ router.get("", auth, async (req, res) => {
   const commentsWithAuthorData = await getDocsWithAuthorData(
     comments,
     commentsOwnersData,
-    ["post"]
+    ["post", "subCommentsCount"]
   );
 
-  res.json({ posts: postsWithAuthorData, comments: commentsWithAuthorData });
+  res.json({
+    posts: postsWithAuthorData,
+    comments: commentsWithAuthorData,
+    hasMorePosts
+  });
 });
 
 // @POST    api/posts
@@ -65,7 +72,9 @@ router.post("", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     const newPost = await createNewDoc(req, Post);
-    const postWithAuthorData = getDocWithAuthorData(newPost, user);
+    const postWithAuthorData = getDocWithAuthorData(newPost, user, [
+      "commentsCount"
+    ]);
 
     res.json(postWithAuthorData);
   } catch (e) {

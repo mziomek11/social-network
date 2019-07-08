@@ -22,15 +22,28 @@ const {
 // @desc    Get All SubComments
 // @access  Private
 router.get("/", auth, async (req, res) => {
-  const subComments = await SubComment.find().sort({ date: 1 });
-  const ownersData = await getDocsOwnersData(subComments);
-  const subCommentsWithAuthorData = getDocsWithAuthorData(
-    subComments,
-    ownersData,
-    ["post", "comment"]
-  );
+  try {
+    const { count, comment } = req.query;
 
-  res.json(subCommentsWithAuthorData);
+    const subCommentsToSkip = parseInt(count);
+    const subComments = await SubComment.find({ comment })
+      .skip(subCommentsToSkip)
+      .limit(2)
+      .sort({ date: -1 });
+
+    subComments.reverse();
+
+    const ownersData = await getDocsOwnersData(subComments);
+    const subCommentsWithAuthorData = getDocsWithAuthorData(
+      subComments,
+      ownersData,
+      ["post", "comment"]
+    );
+
+    res.json(subCommentsWithAuthorData);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // @POST    api/subcomments/:commentid
@@ -41,6 +54,14 @@ router.post("/:comment", auth, async (req, res) => {
     const user = await User.findById(req.user.id);
     const comment = await Comment.findById(req.params.comment);
     if (!comment) res.status(404).json({ msg: "Not found" });
+    await Comment.findOneAndUpdate(
+      { _id: req.params.comment },
+      {
+        $inc: {
+          subCommentsCount: 1
+        }
+      }
+    );
 
     const newSubComment = await createNewDoc(req, SubComment, [
       { key: "post", value: comment.post },
@@ -61,7 +82,7 @@ router.post("/:comment", auth, async (req, res) => {
 // @desc    Update A SubComment
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
- await updateDoc(req, res, SubComment);
+  await updateDoc(req, res, SubComment);
 });
 
 // @DELETE  api/subcomments/:id
@@ -70,7 +91,16 @@ router.put("/:id", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
   const subComment = await SubComment.findById(req.params.id);
   await deleteDoc(req, res, subComment, SubComment, [], "", true);
-  res.json({succes: true});
+  await Comment.findOneAndUpdate(
+    { _id: subComment.comment },
+    {
+      $inc: {
+        subCommentsCount: -1
+      }
+    }
+  );
+
+  res.json({ succes: true });
 });
 
 module.exports = router;

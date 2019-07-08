@@ -24,14 +24,18 @@ export const fetchSubComments: Epic<RootAction, RootAction, RootState> = (
 ) =>
   action$.pipe(
     filter(isOfType(subCommentConstants.FETCH_SUBCOMMENTS)),
-    switchMap(() =>
-      ajax.get(`${apiPath}subcomments/`, tokenHeaders(state$.value)).pipe(
+    switchMap(({ payload }) => {
+      const path = `${apiPath}subcomments?comment=${payload.commentId}&count=${
+        payload.subCommentsCount
+      }/`;
+
+      return ajax.get(path, tokenHeaders(state$.value)).pipe(
         map(({ response }) =>
           fetchSubCommentsSuccess(state$.value.subComment.byId, response)
         ),
         catchError(() => of(fetchSubCommentsFailed()))
-      )
-    )
+      );
+    })
   );
 
 export const addSubComment: Epic<RootAction, RootAction, RootState> = (
