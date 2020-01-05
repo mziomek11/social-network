@@ -1,5 +1,5 @@
 # Social network
-> Social network app created created for educational purposes.
+> Social network app created for educational purposes.
 
 ## Table of contents
 * [General info](#general-info)
